@@ -1,6 +1,11 @@
 #pragma once
+#include <iostream>
+#include "Position.h"
+
 class Entity
 {
+protected:
+	Position myPos;
 public:
 	int getposX();
 	int getposY();
@@ -9,9 +14,9 @@ public:
 	Entity();
 	~Entity();
 	virtual char getIcon() = 0;
-	virtual void move(Map&);
+	virtual void move();
 	virtual void move(char);
-	void setDaPos(Map&, int, int, int, int);
+
 };
 
 

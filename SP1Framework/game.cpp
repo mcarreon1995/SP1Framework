@@ -483,7 +483,7 @@ void renderFramerate()
 
 void renderScore()
 {
-    if (roundActive == true) 
+    while (roundActive == true) 
     {
         if (NotCollected -= 1)
         {

@@ -287,9 +287,10 @@ void render()
     {
     case S_SPLASHSCREEN: renderSplashScreen();
         break;
-    case S_GAME: renderGame();
+    case S_GAME: mainMenu();
         break;
     }
+
     renderFramerate();      // renders debug information, frame rate, elapsed time, etc
     renderScore();
     renderInputEvents();    // renders status of input events
@@ -320,6 +321,58 @@ void renderSplashScreen()  // renders the splash screen
     c.Y += 1;
     c.X = g_Console.getConsoleSize().X / 2 - 9;
     g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x09);
+}
+
+void mainMenu()
+{
+    COORD c = g_Console.getConsoleSize();
+    std::ostringstream ss;
+
+    c.Y = 8;
+    c.X = 31;
+    g_Console.writeToBuffer(c, "1. Play", 0x03);
+
+    c.Y = 9;
+    c.X = 31;
+    g_Console.writeToBuffer(c, "2. Current Score", 0x09);
+
+    c.Y = 10;
+    c.X = 31;
+    g_Console.writeToBuffer(c, "3. Exit", 0x09);
+
+    //ss.str("");
+    //ss << "Mouse position (" << g_mouseEvent.mousePosition.X << ", " << g_mouseEvent.mousePosition.Y << ")";
+    //g_Console.writeToBuffer(g_mouseEvent.mousePosition, ss.str(), 0x59);
+    //ss.str("");
+
+    switch (g_mouseEvent.eventFlags)
+    {
+    case 0:
+        if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 8))
+        {
+            ss.str("PLAY!");
+      
+        }
+        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 9))
+        {
+            ss.str("Current Scores!");
+            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
+        }
+        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 47) && (g_mouseEvent.mousePosition.Y == 10))
+        {
+            ss.str("Quit");
+            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
+        }
+        /*else
+        {
+            ss.str("Some Button Pressed");
+            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 3, ss.str(), 0x59);
+        } */
+        break;
+    default:
+        break;
+
+    }
 }
 
 void renderGame()
@@ -533,6 +586,7 @@ void renderInputEvents()
         g_Console.writeToBuffer(c, ss.str(), 0x17);
     }
 
+    /*
     // mouse events    
     ss.str("");
     ss << "Mouse position (" << g_mouseEvent.mousePosition.X << ", " << g_mouseEvent.mousePosition.Y << ")";
@@ -570,7 +624,7 @@ void renderInputEvents()
         break;
     default:        
         break;
-    }
+    } */
     
 }
 

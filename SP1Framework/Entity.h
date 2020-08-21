@@ -13,7 +13,7 @@ public:
 	void setposY(int X);
 	Entity();
 	~Entity();
-	virtual char getName() = 0;
+	virtual char getIcon() = 0;
 	virtual void move();
 	virtual void move(char);
 

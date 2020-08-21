@@ -27,5 +27,3 @@ void Entity::setposX(int X) {
 void Entity::setposY(int Y) {
 	myPos.setYpos(Y);
 }
-
-

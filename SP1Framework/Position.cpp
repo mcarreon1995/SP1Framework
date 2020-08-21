@@ -13,7 +13,7 @@ Position::~Position()
 
 void Position::setXpos(int Xpos)
 {
-	x = Xpos;
+	Xpos = x;
 }
 
 int Position::getXpos()
@@ -23,7 +23,7 @@ int Position::getXpos()
 
 void Position::setYpos(int Ypos)
 {
-	y = Ypos;
+	Ypos = y;
 }
 
 int Position::getYpos()

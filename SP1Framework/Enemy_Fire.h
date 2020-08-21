@@ -3,7 +3,6 @@
 class Enemy_Fire:public Entity
 {
 private:
-	char fireMovement;
 public:
 	Enemy_Fire();
 	~Enemy_Fire();

@@ -14,10 +14,5 @@ char Enemy_Fire::getName() {
 
 void Enemy_Fire::move() {
 	
-	char plusMinus = '+';
-	if (moveAlong == 'x') {
-		if (plusMinus == '+') {
-			
-		}
-	}
+
 }

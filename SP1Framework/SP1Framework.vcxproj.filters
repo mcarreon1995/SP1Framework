@@ -51,6 +51,33 @@
     <ClCompile Include="maze_03.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Toilet_Paper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Virus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ToiletPaper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Masks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Guard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy_Fire.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="aNitrate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\console.h">
@@ -84,6 +111,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="maze_03.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ANitrate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy_Fire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Guard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Masks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Toilet_Paper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ToiletPaper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Virus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

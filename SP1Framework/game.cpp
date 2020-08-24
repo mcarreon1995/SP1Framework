@@ -30,7 +30,7 @@ bool roundActive = false;
 
 // Game specific variables here
 SGameChar   g_sChar;
-EGAMESTATES g_eGameState = S_SPLASHSCREEN; // initial state
+EGAMESTATES g_eGameState = S_MENU; // initial state
 
 // Console object
 Console g_Console(80, 25, "SP1 Framework");
@@ -149,6 +149,7 @@ void mouseHandler(const MOUSE_EVENT_RECORD& mouseEvent)
         break;
     case S_GAME: gameplayMouseHandler(mouseEvent); // handle gameplay mouse event
         break;
+    case S_MENU: gameplayMouseHandler(mouseEvent);
     }
 }
 
@@ -230,6 +231,7 @@ void update(double dt)
             break;
         case S_GAME: updateGame(); // gameplay logic when we are in the game
             break;
+        case S_MENU: mainMenu();
     }
 }
 
@@ -237,7 +239,7 @@ void update(double dt)
 void splashScreenWait()    // waits for time to pass in splash screen
 {
     if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
-        g_eGameState = S_GAME;
+        g_eGameState = S_MENU;
 }
 
 void updateGame()       // gameplay logic
@@ -304,6 +306,7 @@ void render()
         break;
     case S_GAME: renderGame();
         break;
+    case S_MENU: mainMenu();
     }
     renderFramerate();      // renders debug information, frame rate, elapsed time, etc
     renderInputEvents();    // renders status of input events
@@ -573,5 +576,49 @@ void changeMap(int m) {
         cMap = 1;
         g_sChar.m_cLocation.X = 15 + 11;
         g_sChar.m_cLocation.Y = 11;
+    }
+}
+
+void mainMenu()
+{
+    COORD c = g_Console.getConsoleSize();
+    std::ostringstream ss;
+
+    c.Y = 8;
+    c.X = 31;
+    g_Console.writeToBuffer(c, "1. Play", 0x03);
+
+    c.Y = 9;
+    c.X = 31;
+    g_Console.writeToBuffer(c, "2. Current Score", 0x09);
+
+    c.Y = 10;
+    c.X = 31;
+    g_Console.writeToBuffer(c, "3. Exit", 0x09);
+
+    switch (g_mouseEvent.eventFlags)
+    {
+    case 0:
+        if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 8))
+        {
+            ss.str("PLAY!");
+            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 1, ss.str(), 0x59);
+            g_eGameState = S_GAME;
+
+        }
+        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 9))
+        {
+            ss.str("Current Scores!");
+            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
+        }
+        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 47) && (g_mouseEvent.mousePosition.Y == 10))
+        {
+            ss.str("Quit");
+            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
+        }
+        break;
+    default:
+        break;
+
     }
 }

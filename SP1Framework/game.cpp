@@ -52,7 +52,7 @@ void init( void )
     g_dElapsedTime = 0.0;    
 
     // sets the initial state for the game
-    g_eGameState = S_SPLASHSCREEN;
+    g_eGameState = S_MENU;
 
     g_sChar.m_cLocation.X = 15 + 1;
     g_sChar.m_cLocation.Y = 23;
@@ -281,6 +281,13 @@ void moveCharacter()
         g_sChar.m_bActive = !g_sChar.m_bActive;
         changeMap(2);
     }
+
+    if (checkCollision(g_sChar.m_cLocation.X - 15, g_sChar.m_cLocation.Y) == 2)
+    {
+        NotCollected -= 1;
+        collected += 1;
+        //code to remove the collectible
+    }
 }
 void processUserInput()
 {
@@ -354,15 +361,7 @@ void renderGame()
 
 void renderMap()
 {
-
-    // Set up sample colours, and output shadings
-    const WORD colors[] = {
-        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0x434343
-    };
-
-    COORD c;
-    for (int i = 0; i < 12; ++i)
+    /*for (int i = 0; i < 12; ++i)
     {
         c.X = 5 * i;
         c.Y = i + 1;
@@ -375,7 +374,17 @@ void renderMap()
             c.Y = j;
             g_Console.writeToBuffer(c, " ", colors[13]);
         }
-    }
+    }*/
+
+
+    // Set up sample colours, and output shadings
+    const WORD colors[] = {
+        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
+        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0x434343
+    };
+
+    COORD c;
+
     for (int i = 0; i < 50; i++) {
         for (int j = 0; j < 25; j++) {
             c.X = 15 + i;

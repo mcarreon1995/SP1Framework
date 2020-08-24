@@ -3,21 +3,23 @@
 //
 #include "game.h"
 #include "Framework\console.h"
+#include "map.h"
+#include "maze_01.h"
+#include "maze_02.h"
+#include "maze_05.h"
+#include "playerVL.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+
+int cMap = 0;
+
+map* currentMap[5];
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 SKeyEvent g_skKeyEvent[K_COUNT];
 SMouseEvent g_mouseEvent;
-int roundnumber;
-bool LevelCompleted = false;
-int collected = 0;
-int NotCollected = 0;
-int score = 0;
-int totalscore = 0;
-bool roundActive = false;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -26,6 +28,7 @@ EGAMESTATES g_eGameState = S_SPLASHSCREEN; // initial state
 // Console object
 Console g_Console(80, 25, "SP1 Framework");
 
+
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
 //            Initialize variables, allocate memory, load data from file, etc. 
@@ -33,16 +36,19 @@ Console g_Console(80, 25, "SP1 Framework");
 // Input    : void
 // Output   : void
 //--------------------------------------------------------------
+
 void init( void )
 {
+    currentMap[0] = new maze_01;
+    currentMap[1] = new maze_02;
     // Set precision for floating point output
     g_dElapsedTime = 0.0;    
 
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
 
-    g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
-    g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
+    g_sChar.m_cLocation.X = 15 + 1;
+    g_sChar.m_cLocation.Y = 23;
     g_sChar.m_bActive = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -238,32 +244,34 @@ void moveCharacter()
 {    
     // Updating the location of the character based on the key release
     // providing a beep sound whenver we shift the character
-    if (g_skKeyEvent[K_UP].keyReleased && g_sChar.m_cLocation.Y > 0)
+    int pos_x = g_sChar.m_cLocation.X - 15;
+    int pos_y = g_sChar.m_cLocation.Y;
+
+    if (g_skKeyEvent[K_UP].keyDown && g_sChar.m_cLocation.Y > 0 && checkCollision(pos_x, pos_y - 1) != 1)
     {
-        //Beep(1440, 30);
+        //Beep(783.99, 30);
         g_sChar.m_cLocation.Y--;       
     }
-    if (g_skKeyEvent[K_LEFT].keyReleased && g_sChar.m_cLocation.X > 0)
+    if (g_skKeyEvent[K_LEFT].keyDown && g_sChar.m_cLocation.X > 15 && checkCollision(pos_x - 1, pos_y) != 1)
     {
-        //Beep(1440, 30);
+        //Beep(783.99, 30);
         g_sChar.m_cLocation.X--;        
     }
-    if (g_skKeyEvent[K_DOWN].keyReleased && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+    if (g_skKeyEvent[K_DOWN].keyDown && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && checkCollision(pos_x, pos_y + 1) != 1)
     {
-        //Beep(1440, 30);
+        //Beep(783.99, 30);
         g_sChar.m_cLocation.Y++;        
     }
-    if (g_skKeyEvent[K_RIGHT].keyReleased && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+    if (g_skKeyEvent[K_RIGHT].keyDown && g_sChar.m_cLocation.X < 64 && checkCollision(pos_x + 1, pos_y) != 1)
     {
-        //Beep(1440, 30);
+        //Beep(783.99, 30);
         g_sChar.m_cLocation.X++;        
     }
-    if (g_skKeyEvent[K_SPACE].keyReleased)
+    if (g_skKeyEvent[K_SPACE].keyDown)
     {
-        g_sChar.m_bActive = !g_sChar.m_bActive;        
+        g_sChar.m_bActive = !g_sChar.m_bActive;
+        changeMap(2);
     }
-
-   
 }
 void processUserInput()
 {
@@ -291,7 +299,6 @@ void render()
         break;
     }
     renderFramerate();      // renders debug information, frame rate, elapsed time, etc
-    renderScore();
     renderInputEvents();    // renders status of input events
     renderToScreen();       // dump the contents of the buffer to the screen, one frame worth of game
 }
@@ -313,7 +320,7 @@ void renderSplashScreen()  // renders the splash screen
     COORD c = g_Console.getConsoleSize();
     c.Y /= 3;
     c.X = c.X / 2 - 9;
-    g_Console.writeToBuffer(c, "A game in 3 seconds", 0x03);
+    g_Console.writeToBuffer(c, "M - Reversal", 0x03);
     c.Y += 1;
     c.X = g_Console.getConsoleSize().X / 2 - 20;
     g_Console.writeToBuffer(c, "Press <Space> to change character colour", 0x09);
@@ -326,19 +333,15 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
-    if (LevelCompleted == true)
-    {
-        renderTransition();
-        renderLevelCompleted();
-    }
 }
 
 void renderMap()
 {
+
     // Set up sample colours, and output shadings
     const WORD colors[] = {
         0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
+        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0x434343
     };
 
     COORD c;
@@ -349,230 +352,89 @@ void renderMap()
         colour(colors[i]);
         g_Console.writeToBuffer(c, " °±²Û", colors[i]);
     }
+    for (int i = 0; i < 50; i++) {
+        for (int j = 0; j < 25; j++) {
+            c.X = 15 + i;
+            c.Y = j;
+            g_Console.writeToBuffer(c, " ", colors[13]);
+        }
+    }
+    for (int i = 0; i < 50; i++) {
+        for (int j = 0; j < 25; j++) {
+            c.X = 15 + i;
+            c.Y = j;
+            if (c.X <= g_sChar.m_cLocation.X + 6 && c.X >= g_sChar.m_cLocation.X - 6) {
+                if (c.Y <= g_sChar.m_cLocation.Y + 3 && c.Y >= g_sChar.m_cLocation.Y - 3) {
+                    if (currentMap[cMap]->getMapVar(i, j) != '#') {
+                        g_Console.writeToBuffer(c, " ", colors[12]);
+                    }
+                    else
+                        g_Console.writeToBuffer(c, "±", colors[11]);
+                }
+            }
+        }
+    }
 }
 
 void renderCharacter()
 {
     // Draw the location of the character
     WORD charColor = 0x0C;
+    COORD c;
     if (g_sChar.m_bActive)
     {
         charColor = 0x0A;
     }
-    g_Console.writeToBuffer(g_sChar.m_cLocation, (char)3, charColor);
+    g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
+    
 }
 
-void renderLevelCompleted()
-{
-    COORD c;
-    c.X = 12;
-    c.Y = 40;
-    if (roundActive == false) {
-        if ((roundnumber == 1) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Tutorial Level Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 2) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 1 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 3) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 2 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 4) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 3 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 5) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 4 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 6) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 5 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-    }
-}
-
-void renderTransition()
-{
-    COORD c;
-    c.X = 12;
-    c.Y = 40;
-
-    if (roundnumber == 1)
-    {
-        g_Console.writeToBuffer(c, "Tutorial Level", 0xF6);
-    }
-    else if (roundnumber == 2)
-    {
-        g_Console.writeToBuffer(c, "Level 1", 0xF6);
-    }
-    else if (roundnumber == 3)
-    {
-        g_Console.writeToBuffer(c, "Level 2", 0xF6);
-    }
-    else if (roundnumber == 4)
-    {
-        g_Console.writeToBuffer(c, "Level 3", 0xF6);
-    }
-    else if (roundnumber == 5)
-    {
-        g_Console.writeToBuffer(c, "Level 4", 0xF6);
-    }
-    else if (roundnumber == 6)
-    {
-        g_Console.writeToBuffer(c, "Level 5", 0xF6);
-    }
-}
 void renderFramerate()
 {
     COORD c;
     // displays the framerate
     std::ostringstream ss;
- /*   ss << std::fixed << std::setprecision(3);
+    ss << std::fixed << std::setprecision(3);
     ss << 1.0 / g_dDeltaTime << "fps";
-    c.X = 0;
-    c.Y = 1;
-    g_Console.writeToBuffer(c, ss.str());*/
+    c.X = g_Console.getConsoleSize().X - 9;
+    c.Y = 0;
+    g_Console.writeToBuffer(c, ss.str());
 
     // displays the elapsed time
     ss.str("");
     ss << g_dElapsedTime << "secs";
-    c.X = g_Console.getConsoleSize().X - 11;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
-}
-
-void renderScore()
-{
-    while (roundActive == true) 
-    {
-        if (NotCollected -= 1)
-        {
-            collected += 1;
-        }
-    }
-    COORD c;
-    std::ostringstream ss;
-    ss << "Collected " << collected << ": " << NotCollected;
     c.X = 0;
     c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
+    g_Console.writeToBuffer(c, ss.str(), 0x59);
 }
 
 // this is an example of how you would use the input events
 void renderInputEvents()
 {
-    // keyboard events
-    COORD startPos = {50, 2};
-    std::ostringstream ss;
-    std::string key;
-    for (int i = 0; i < K_COUNT; ++i)
-    {
-        ss.str("");
-        switch (i)
-        {
-        case K_UP: key = "UP";
-            break;
-        case K_DOWN: key = "DOWN";
-            break;
-        case K_LEFT: key = "LEFT";
-            break;
-        case K_RIGHT: key = "RIGHT";
-            break;
-        case K_SPACE: key = "SPACE";
-            break;
-        default: continue;
-        }
-        if (g_skKeyEvent[i].keyDown)
-            ss << key << " pressed";
-        else if (g_skKeyEvent[i].keyReleased)
-            ss << key << " released";
-        else
-            ss << key << " not pressed";
 
-        COORD c = { startPos.X, startPos.Y + i };
-        g_Console.writeToBuffer(c, ss.str(), 0x17);
-    }
-
-    // mouse events    
-    ss.str("");
-    ss << "Mouse position (" << g_mouseEvent.mousePosition.X << ", " << g_mouseEvent.mousePosition.Y << ")";
-    g_Console.writeToBuffer(g_mouseEvent.mousePosition, ss.str(), 0x59);
-    ss.str("");
-    switch (g_mouseEvent.eventFlags)
-    {
-    case 0:
-        if (g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED)
-        {
-            ss.str("Left Button Pressed");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 1, ss.str(), 0x59);
-        }
-        else if (g_mouseEvent.buttonState == RIGHTMOST_BUTTON_PRESSED)
-        {
-            ss.str("Right Button Pressed");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
-        }
-        else
-        {
-            ss.str("Some Button Pressed");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 3, ss.str(), 0x59);
-        }
-        break;
-    case DOUBLE_CLICK:
-        ss.str("Double Clicked");
-        g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 4, ss.str(), 0x59);
-        break;        
-    case MOUSE_WHEELED:
-        if (g_mouseEvent.buttonState & 0xFF000000)
-            ss.str("Mouse wheeled down");
-        else
-            ss.str("Mouse wheeled up");
-        g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 5, ss.str(), 0x59);
-        break;
-    default:        
-        break;
-    }
-    
 }
 
+int checkCollision(int x, int y) {
+    int collideType = 0;
+    if (currentMap[cMap]->getMapVar(x, y) == '#') {
+        collideType = 1;
+    }
+    else if (currentMap[cMap]->getMapVar(x, y) == 'C') {
+        collideType = 2;
+    }
+    return collideType;
+}
 
-
+void changeMap(int m) {
+    switch (m) {
+    case 1 :
+        cMap = 0;
+        g_sChar.m_cLocation.X = 15 + 1;
+        g_sChar.m_cLocation.Y = 24;
+        break;
+    case 2 :
+        cMap = 1;
+        g_sChar.m_cLocation.X = 15 + 11;
+        g_sChar.m_cLocation.Y = 11;
+    }
+}

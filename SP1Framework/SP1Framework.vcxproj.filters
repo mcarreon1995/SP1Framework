@@ -19,12 +19,6 @@
     <Filter Include="Source Files\Framework">
       <UniqueIdentifier>{37c19c94-9502-4b2b-b3f1-70fa908b49af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Entities">
-      <UniqueIdentifier>{0a87426c-27a1-4ad4-ae90-2994a3eb9385}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entities">
-      <UniqueIdentifier>{f7d89d91-429e-442e-adc3-b31f72a042da}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,35 +33,23 @@
     <ClCompile Include="game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Position.cpp">
+    <ClCompile Include="map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\Entities</Filter>
+    <ClCompile Include="maze_01.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy_Fire.cpp">
-      <Filter>Source Files\Entities</Filter>
+    <ClCompile Include="playerVL.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files\Entities</Filter>
+    <ClCompile Include="maze_05.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Toilet_Paper.cpp">
-      <Filter>Source Files\Entities</Filter>
+    <ClCompile Include="maze_02.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bat.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="ANitrate.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Guard.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Masks.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Virus.cpp">
-      <Filter>Source Files\Entities</Filter>
+    <ClCompile Include="maze_03.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,32 +65,31 @@
     <ClInclude Include="Position.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files\Entities</Filter>
+    <ClInclude Include="map.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy_Fire.h">
-      <Filter>Header Files\Entities</Filter>
+    <ClInclude Include="maze_01.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files\Entities</Filter>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Toilet_Paper.h">
-      <Filter>Header Files\Entities</Filter>
+    <ClInclude Include="playerVL.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bat.h">
-      <Filter>Header Files\Entities</Filter>
+    <ClInclude Include="maze_05.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ANitrate.h">
-      <Filter>Header Files\Entities</Filter>
+    <ClInclude Include="maze_02.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Guard.h">
-      <Filter>Header Files\Entities</Filter>
+    <ClInclude Include="maze_03.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Masks.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Virus.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SP1Framework.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

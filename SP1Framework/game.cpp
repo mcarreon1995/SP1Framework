@@ -20,6 +20,13 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 SKeyEvent g_skKeyEvent[K_COUNT];
 SMouseEvent g_mouseEvent;
+int roundnumber;
+bool LevelCompleted = false;
+int collected = 0;
+int NotCollected = 0;
+int score = 0;
+int totalscore = 0;
+bool roundActive = false;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -301,6 +308,7 @@ void render()
     renderFramerate();      // renders debug information, frame rate, elapsed time, etc
     renderInputEvents();    // renders status of input events
     renderToScreen();       // dump the contents of the buffer to the screen, one frame worth of game
+    
 }
 
 void clearScreen()
@@ -333,6 +341,12 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
+    renderScore();
+    if (LevelCompleted == true)
+    {
+        renderTransition();
+        renderLevelCompleted();
+    }
 }
 
 void renderMap()
@@ -389,25 +403,148 @@ void renderCharacter()
     
 }
 
+void renderLevelCompleted()
+{
+    COORD c;
+    c.X = 12;
+    c.Y = 40;
+    if (roundActive == false) {
+        if ((roundnumber == 1) && (LevelCompleted == true))
+        {
+            score = collected * 2;
+            totalscore += score;
+            g_Console.writeToBuffer(c, "Tutorial Level Completed", 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
+        }
+        else if ((roundnumber == 2) && (LevelCompleted == true))
+        {
+            score = collected * 2;
+            totalscore += score;
+            g_Console.writeToBuffer(c, "Level 1 Completed", 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
+        }
+        else if ((roundnumber == 3) && (LevelCompleted == true))
+        {
+            score = collected * 2;
+            totalscore += score;
+            g_Console.writeToBuffer(c, "Level 2 Completed", 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
+        }
+        else if ((roundnumber == 4) && (LevelCompleted == true))
+        {
+            score = collected * 2;
+            totalscore += score;
+            g_Console.writeToBuffer(c, "Level 3 Completed", 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
+        }
+        else if ((roundnumber == 5) && (LevelCompleted == true))
+        {
+            score = collected * 2;
+            totalscore += score;
+            g_Console.writeToBuffer(c, "Level 4 Completed", 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
+        }
+        else if ((roundnumber == 6) && (LevelCompleted == true))
+        {
+            score = collected * 2;
+            totalscore += score;
+            g_Console.writeToBuffer(c, "Level 5 Completed", 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
+            c.Y -= 2;
+            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
+        }
+    }
+}
+
+void renderTransition()
+{
+    COORD c;
+    c.X = 12;
+    c.Y = 40;
+
+    if (roundnumber == 1)
+    {
+        g_Console.writeToBuffer(c, "Tutorial Level", 0xF6);
+    }
+    else if (roundnumber == 2)
+    {
+        g_Console.writeToBuffer(c, "Level 1", 0xF6);
+    }
+    else if (roundnumber == 3)
+    {
+        g_Console.writeToBuffer(c, "Level 2", 0xF6);
+    }
+    else if (roundnumber == 4)
+    {
+        g_Console.writeToBuffer(c, "Level 3", 0xF6);
+    }
+    else if (roundnumber == 5)
+    {
+        g_Console.writeToBuffer(c, "Level 4", 0xF6);
+    }
+    else if (roundnumber == 6)
+    {
+        g_Console.writeToBuffer(c, "Level 5", 0xF6);
+    }
+}
+
 void renderFramerate()
 {
     COORD c;
     // displays the framerate
     std::ostringstream ss;
-    ss << std::fixed << std::setprecision(3);
+    /*ss << std::fixed << std::setprecision(3);
     ss << 1.0 / g_dDeltaTime << "fps";
     c.X = g_Console.getConsoleSize().X - 9;
     c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
+    g_Console.writeToBuffer(c, ss.str());*/
 
     // displays the elapsed time
     ss.str("");
     ss << g_dElapsedTime << "secs";
-    c.X = 0;
+    c.X = g_Console.getConsoleSize().X - 11;
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str(), 0x59);
 }
 
+void renderScore()
+{
+    while (roundActive == true)
+    {
+        if (NotCollected -= 1)
+        {
+            collected += 1;
+        }
+    }
+    COORD c;
+    std::ostringstream ss;
+    ss << "Collected " << collected << ": " << NotCollected;
+    c.X = 0;
+    c.Y = 0;
+    g_Console.writeToBuffer(c, ss.str());
+
+    ss.str("");
+    ss << "Press <Esc> key to quit the game";
+    c.X = 25;
+    c.Y = 24;
+    g_Console.writeToBuffer(c, ss.str());
+}
 // this is an example of how you would use the input events
 void renderInputEvents()
 {

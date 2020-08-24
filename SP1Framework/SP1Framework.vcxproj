@@ -94,6 +94,7 @@
     <ClCompile Include="maze_03.cpp" />
     <ClCompile Include="maze_05.cpp" />
     <ClCompile Include="playerVL.cpp" />
+    <ClCompile Include="Position.cpp" />
     <ClCompile Include="ToiletPaper.cpp" />
     <ClCompile Include="Toilet_Paper.cpp" />
     <ClCompile Include="Virus.cpp" />

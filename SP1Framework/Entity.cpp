@@ -8,7 +8,7 @@ Entity::~Entity() {
 
 };
 
-void Entity::move() {
+void Entity::move(map&) {
 
 };
 void Entity::move(char) {

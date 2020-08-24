@@ -52,7 +52,7 @@ void init( void )
     g_dElapsedTime = 0.0;    
 
     // sets the initial state for the game
-    g_eGameState = S_SPLASHSCREEN;
+    g_eGameState = S_MENU;
 
     g_sChar.m_cLocation.X = 15 + 1;
     g_sChar.m_cLocation.Y = 23;

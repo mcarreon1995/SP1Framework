@@ -508,11 +508,11 @@ void renderFramerate()
     COORD c;
     // displays the framerate
     std::ostringstream ss;
-    ss << std::fixed << std::setprecision(3);
+    /*ss << std::fixed << std::setprecision(3);
     ss << 1.0 / g_dDeltaTime << "fps";
     c.X = g_Console.getConsoleSize().X - 9;
     c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
+    g_Console.writeToBuffer(c, ss.str());*/
 
     // displays the elapsed time
     ss.str("");
@@ -537,6 +537,12 @@ void renderScore()
     c.X = 0;
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str());
+
+    ss << "Press <Esc> key to quit the game";
+    c.X = g_Console.getConsoleSize().X - 9;
+    c.Y = 0;
+    g_Console.writeToBuffer(c, ss.str());
+
 }
 
 // this is an example of how you would use the input events

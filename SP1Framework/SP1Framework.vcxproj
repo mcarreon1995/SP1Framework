@@ -93,9 +93,9 @@
     <ClCompile Include="maze_02.cpp" />
     <ClCompile Include="maze_03.cpp" />
     <ClCompile Include="maze_05.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="playerVL.cpp" />
     <ClCompile Include="Position.cpp" />
-    <ClCompile Include="ToiletPaper.cpp" />
     <ClCompile Include="Toilet_Paper.cpp" />
     <ClCompile Include="Virus.cpp" />
   </ItemGroup>
@@ -114,10 +114,10 @@
     <ClInclude Include="maze_02.h" />
     <ClInclude Include="maze_03.h" />
     <ClInclude Include="maze_05.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="playerVL.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="ToiletPaper.h" />
     <ClInclude Include="Toilet_Paper.h" />
     <ClInclude Include="Virus.h" />
   </ItemGroup>

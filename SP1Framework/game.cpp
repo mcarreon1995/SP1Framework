@@ -281,6 +281,13 @@ void moveCharacter()
         g_sChar.m_bActive = !g_sChar.m_bActive;
         changeMap(2);
     }
+
+    if (checkCollision(g_sChar.m_cLocation.X - 15, g_sChar.m_cLocation.Y) == 2)
+    {
+        NotCollected -= 1;
+        collected += 1;
+        //code to remove the collectible
+    }
 }
 void processUserInput()
 {

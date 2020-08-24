@@ -20,13 +20,6 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 SKeyEvent g_skKeyEvent[K_COUNT];
 SMouseEvent g_mouseEvent;
-int roundnumber;
-bool LevelCompleted = false;
-int collected = 0;
-int NotCollected = 0;
-int score = 0;
-int totalscore = 0;
-bool roundActive = false;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -149,8 +142,6 @@ void mouseHandler(const MOUSE_EVENT_RECORD& mouseEvent)
         break;
     case S_GAME: gameplayMouseHandler(mouseEvent); // handle gameplay mouse event
         break;
-    case S_MENU: gameplayMouseHandler(mouseEvent);
-        break;
     }
 }
 
@@ -232,8 +223,6 @@ void update(double dt)
             break;
         case S_GAME: updateGame(); // gameplay logic when we are in the game
             break;
-        case S_MENU: mainMenu();
-            break;
     }
 }
 
@@ -241,7 +230,7 @@ void update(double dt)
 void splashScreenWait()    // waits for time to pass in splash screen
 {
     if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
-        g_eGameState = S_MENU;
+        g_eGameState = S_GAME;
 }
 
 void updateGame()       // gameplay logic
@@ -306,15 +295,9 @@ void render()
     {
     case S_SPLASHSCREEN: renderSplashScreen();
         break;
-    case S_MENU: mainMenu();
-        break;
     case S_GAME: renderGame();
         break;
-    
-
     }
-
-    renderScore();
     renderFramerate();      // renders debug information, frame rate, elapsed time, etc
     renderInputEvents();    // renders status of input events
     renderToScreen();       // dump the contents of the buffer to the screen, one frame worth of game
@@ -350,11 +333,6 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
-    if (LevelCompleted == true)
-    {
-        renderTransition();
-        renderLevelCompleted();
-    }
 }
 
 void renderMap()
@@ -411,117 +389,16 @@ void renderCharacter()
     
 }
 
-void renderLevelCompleted()
-{
-    COORD c;
-    c.X = 12;
-    c.Y = 40;
-    if (roundActive == false) {
-        if ((roundnumber == 1) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Tutorial Level Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 2) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 1 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 3) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 2 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 4) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 3 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 5) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 4 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 6) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 5 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-    }
-}
-
-void renderTransition()
-{
-    COORD c;
-    c.X = 12;
-    c.Y = 40;
-
-    if (roundnumber == 1)
-    {
-        g_Console.writeToBuffer(c, "Tutorial Level", 0xF6);
-    }
-    else if (roundnumber == 2)
-    {
-        g_Console.writeToBuffer(c, "Level 1", 0xF6);
-    }
-    else if (roundnumber == 3)
-    {
-        g_Console.writeToBuffer(c, "Level 2", 0xF6);
-    }
-    else if (roundnumber == 4)
-    {
-        g_Console.writeToBuffer(c, "Level 3", 0xF6);
-    }
-    else if (roundnumber == 5)
-    {
-        g_Console.writeToBuffer(c, "Level 4", 0xF6);
-    }
-    else if (roundnumber == 6)
-    {
-        g_Console.writeToBuffer(c, "Level 5", 0xF6);
-    }
-}
-
 void renderFramerate()
 {
     COORD c;
     // displays the framerate
     std::ostringstream ss;
-    /*ss << std::fixed << std::setprecision(3);
+    ss << std::fixed << std::setprecision(3);
     ss << 1.0 / g_dDeltaTime << "fps";
     c.X = g_Console.getConsoleSize().X - 9;
     c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());*/
+    g_Console.writeToBuffer(c, ss.str());
 
     // displays the elapsed time
     ss.str("");
@@ -529,30 +406,6 @@ void renderFramerate()
     c.X = 0;
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str(), 0x59);
-}
-
-void renderScore()
-{
-    while (roundActive == true)
-    {
-        if (NotCollected -= 1)
-        {
-            collected += 1;
-        }
-    }
-    COORD c;
-    std::ostringstream ss;
-    ss << "Collected " << collected << ": " << NotCollected;
-    c.X = 0;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
-
-    ss.str("");
-    ss << "Press <Esc> key to quit the game";
-    c.X = 25;
-    c.Y = 24;
-    g_Console.writeToBuffer(c, ss.str());
-
 }
 
 // this is an example of how you would use the input events
@@ -583,50 +436,5 @@ void changeMap(int m) {
         cMap = 1;
         g_sChar.m_cLocation.X = 15 + 11;
         g_sChar.m_cLocation.Y = 11;
-    }
-}
-
-void mainMenu()
-{
-    COORD c = g_Console.getConsoleSize();
-    std::ostringstream ss;
-
-    c.Y = 8;
-    c.X = 31;
-    g_Console.writeToBuffer(c, "1. Play", 0x03);
-
-    c.Y = 9;
-    c.X = 31;
-    g_Console.writeToBuffer(c, "2. Current Score", 0x09);
-
-    c.Y = 10;
-    c.X = 31;
-    g_Console.writeToBuffer(c, "3. Exit", 0x09);
-
-    switch (g_mouseEvent.eventFlags)
-    {
-    case 0:
-        if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 8))
-        {
-            ss.str("PLAY!");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 1, ss.str(), 0x59);
-            g_eGameState = S_GAME;
-
-        }
-        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 9))
-        {
-            ss.str("Current Scores!");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
-        }
-        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 47) && (g_mouseEvent.mousePosition.Y == 10))
-        {
-            ss.str("Quit");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
-            g_bQuitGame = true;
-        }
-        break;
-    default:
-        break;
-
     }
 }

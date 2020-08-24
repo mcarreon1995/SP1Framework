@@ -615,6 +615,7 @@ void mainMenu()
         {
             ss.str("Quit");
             g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
+            g_bQuitGame = true;
         }
         break;
     default:

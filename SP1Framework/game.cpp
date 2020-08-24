@@ -281,11 +281,14 @@ void moveCharacter()
         g_sChar.m_bActive = !g_sChar.m_bActive;
         changeMap(2);
     }
-
-    if (checkCollision(g_sChar.m_cLocation.X - 15, g_sChar.m_cLocation.Y) == 2)
+    int new_x = g_sChar.m_cLocation.X - 15;
+    int new_y = g_sChar.m_cLocation.Y;
+    if (checkCollision(new_x, new_y) == 2)
     {
         NotCollected -= 1;
         collected += 1;
+        currentMap[cMap]->updateMap(new_x, new_y, ' ');
+
         //code to remove the collectible
     }
 }
@@ -384,7 +387,13 @@ void renderMap()
     };
 
     COORD c;
-
+    for (int i = 0; i < 80; i++) {
+        for (int j = 0; j < 50; j++) {
+            c.X = i;
+            c.Y = j;
+            g_Console.writeToBuffer(c, " ", colors[12]);
+        }
+    }
     for (int i = 0; i < 50; i++) {
         for (int j = 0; j < 25; j++) {
             c.X = 15 + i;
@@ -396,6 +405,9 @@ void renderMap()
                     }
                     else
                         g_Console.writeToBuffer(c, "±", colors[11]);
+                    if (currentMap[cMap]->getMapVar(i, j) == 'C') {
+                        g_Console.writeToBuffer(c, "X", colors[3]);
+                    }
                 }
             }
         }
@@ -578,6 +590,7 @@ void changeMap(int m) {
     switch (m) {
     case 1 :
         cMap = 0;
+        NotCollected = 8;
         g_sChar.m_cLocation.X = 15 + 1;
         g_sChar.m_cLocation.Y = 24;
         break;

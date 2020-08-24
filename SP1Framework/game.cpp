@@ -391,7 +391,7 @@ void renderMap()
                         g_Console.writeToBuffer(c, " ", colors[12]);
                     }
                     else
-                        g_Console.writeToBuffer(c, "?", colors[11]);
+                        g_Console.writeToBuffer(c, "±", colors[11]);
                 }
             }
         }

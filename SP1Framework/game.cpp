@@ -547,9 +547,10 @@ void renderScore()
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str());
 
+    ss.str("");
     ss << "Press <Esc> key to quit the game";
-    c.X = g_Console.getConsoleSize().X - 9;
-    c.Y = 0;
+    c.X = 25;
+    c.Y = 24;
     g_Console.writeToBuffer(c, ss.str());
 
 }

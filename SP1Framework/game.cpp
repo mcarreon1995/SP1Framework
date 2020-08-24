@@ -285,7 +285,7 @@ void moveCharacter()
     int new_y = g_sChar.m_cLocation.Y;
     if (checkCollision(new_x, new_y) == 2)
     {
-        NotCollected -= 1;
+        
         collected += 1;
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
 

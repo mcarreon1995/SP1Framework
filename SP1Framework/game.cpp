@@ -6,6 +6,7 @@
 #include "map.h"
 #include "maze_01.h"
 #include "maze_02.h"
+#include "maze_03.h"
 #include "maze_05.h"
 #include "playerVL.h"
 #include <iostream>
@@ -48,6 +49,7 @@ void init( void )
 {
     currentMap[0] = new maze_01;
     currentMap[1] = new maze_02;
+    currentMap[2] = new maze_03;
     // Set precision for floating point output
     g_dElapsedTime = 0.0;    
 
@@ -279,7 +281,6 @@ void moveCharacter()
     if (g_skKeyEvent[K_SPACE].keyDown)
     {
         g_sChar.m_bActive = !g_sChar.m_bActive;
-        changeMap(2);
     }
     int new_x = g_sChar.m_cLocation.X - 15;
     int new_y = g_sChar.m_cLocation.Y;
@@ -290,6 +291,10 @@ void moveCharacter()
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
 
         //code to remove the collectible
+    }
+    else if (checkCollision(new_x, new_y) == 3) {
+        cMap += 1;
+        changeMap();
     }
 }
 void processUserInput()
@@ -388,7 +393,7 @@ void renderMap()
 
     COORD c;
     for (int i = 0; i < 80; i++) {
-        for (int j = 0; j < 50; j++) {
+        for (int j = 0; j < 25; j++) {
             c.X = i;
             c.Y = j;
             g_Console.writeToBuffer(c, " ", colors[12]);
@@ -406,7 +411,10 @@ void renderMap()
                     else
                         g_Console.writeToBuffer(c, "±", colors[11]);
                     if (currentMap[cMap]->getMapVar(i, j) == 'C') {
-                        g_Console.writeToBuffer(c, "X", colors[3]);
+                        g_Console.writeToBuffer(c, " ", colors[3]);
+                    }
+                    else if (currentMap[cMap]->getMapVar(i, j) == 'E') {
+                        g_Console.writeToBuffer(c, " ", colors[4]);
                     }
                 }
             }
@@ -583,21 +591,21 @@ int checkCollision(int x, int y) {
     else if (currentMap[cMap]->getMapVar(x, y) == 'C') {
         collideType = 2;
     }
+    else if (currentMap[cMap]->getMapVar(x, y) == 'E') {
+        collideType = 3;
+    }
     return collideType;
 }
 
-void changeMap(int m) {
-    switch (m) {
-    case 1 :
-        cMap = 0;
-        NotCollected = 8;
-        g_sChar.m_cLocation.X = 15 + 1;
-        g_sChar.m_cLocation.Y = 24;
-        break;
-    case 2 :
-        cMap = 1;
-        g_sChar.m_cLocation.X = 15 + 11;
-        g_sChar.m_cLocation.Y = 11;
+void changeMap() {
+    NotCollected = currentMap[cMap]->getTotalCollectibles();
+    for (int i = 0; i < 50; i++) {
+        for (int j = 0; j < 25; j++) {
+            if (currentMap[cMap]->getMapVar(i, j) == 'S') {
+                g_sChar.m_cLocation.X = 15 + i;
+                g_sChar.m_cLocation.Y = j;
+            }
+        }
     }
 }
 

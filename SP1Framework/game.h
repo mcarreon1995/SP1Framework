@@ -40,7 +40,8 @@ enum EGAMESTATES
 {
     S_SPLASHSCREEN,
     S_GAME,
-    S_COUNT
+    S_COUNT,
+    S_MENU
 };
 
 // struct for the game character
@@ -74,6 +75,7 @@ void renderInputEvents();   // renders the status of input events
 void renderTransition();   // render the transition screen
 void renderLevelCompleted(); //render Level Completion Screen
 void renderScore();
+void mainMenu();
 
 
 // keyboard and mouse input event managers

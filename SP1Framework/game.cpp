@@ -47,11 +47,13 @@ Console g_Console(80, 25, "SP1 Framework");
 
 void init( void )
 {
+
     currentMap[0] = new maze_01;
     currentMap[1] = new maze_02;
     currentMap[2] = new maze_03;
     // Set precision for floating point output
     g_dElapsedTime = 0.0;    
+    changeMap();
 
     // sets the initial state for the game
     g_eGameState = S_MENU;
@@ -122,7 +124,7 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
     {
     case S_SPLASHSCREEN: // don't handle anything for the splash screen
         break;
-    case S_GAME: gameplayKBHandler(keyboardEvent); // handle gameplay keyboard event 
+    case S_GAME1: gameplayKBHandler(keyboardEvent); // handle gameplay keyboard event 
         break;
     }
 }
@@ -149,7 +151,7 @@ void mouseHandler(const MOUSE_EVENT_RECORD& mouseEvent)
     {
     case S_SPLASHSCREEN: // don't handle anything for the splash screen
         break;
-    case S_GAME: gameplayMouseHandler(mouseEvent); // handle gameplay mouse event
+    case S_GAME1: gameplayMouseHandler(mouseEvent); // handle gameplay mouse event
         break;
     case S_MENU: gameplayMouseHandler(mouseEvent);
     }
@@ -231,7 +233,7 @@ void update(double dt)
     {
         case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
             break;
-        case S_GAME: updateGame(); // gameplay logic when we are in the game
+        case S_GAME1: updateGame(); // gameplay logic when we are in the game
             break;
         case S_MENU: mainMenu();
     }
@@ -301,7 +303,7 @@ void processUserInput()
 {
     // quits the game if player hits the escape key
     if (g_skKeyEvent[K_ESCAPE].keyReleased)
-        g_bQuitGame = true;    
+        g_eGameState = S_MENU;
 }
 
 //--------------------------------------------------------------
@@ -319,7 +321,7 @@ void render()
     {
     case S_SPLASHSCREEN: renderSplashScreen();
         break;
-    case S_GAME: renderGame();
+    case S_GAME1: renderGame();
         break;
     case S_MENU: mainMenu();
     }
@@ -572,9 +574,9 @@ void renderScore()
     g_Console.writeToBuffer(c, ss.str());
 
     ss.str("");
-    ss << "Press <Esc> key to quit the game";
-    c.X = 25;
-    c.Y = 24;
+    ss << "<Esc> to menu";
+    c.X = 0;
+    c.Y = 2;
     g_Console.writeToBuffer(c, ss.str());
 }
 // this is an example of how you would use the input events
@@ -620,31 +622,17 @@ void mainMenu()
 
     c.Y = 9;
     c.X = 31;
-    g_Console.writeToBuffer(c, "2. Current Score", 0x09);
-
-    c.Y = 10;
-    c.X = 31;
-    g_Console.writeToBuffer(c, "3. Exit", 0x09);
+    g_Console.writeToBuffer(c, "2. Quit", 0x09);
 
     switch (g_mouseEvent.eventFlags)
     {
     case 0:
         if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 8))
         {
-            ss.str("PLAY!");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 1, ss.str(), 0x59);
-            g_eGameState = S_GAME;
-
+            g_eGameState = S_GAME1;
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 9))
         {
-            ss.str("Current Scores!");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
-        }
-        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 47) && (g_mouseEvent.mousePosition.Y == 10))
-        {
-            ss.str("Quit");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
             g_bQuitGame = true;
         }
         break;

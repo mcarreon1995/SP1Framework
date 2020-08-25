@@ -540,12 +540,12 @@ void renderFramerate()
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str());*/
 
-    // displays the elapsed time
+    /* displays the elapsed time
     ss.str("");
     ss << g_dElapsedTime << "secs";
     c.X = g_Console.getConsoleSize().X - 11;
     c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str(), 0x59);
+    g_Console.writeToBuffer(c, ss.str(), 0x59); */
 }
 
 void renderScore()

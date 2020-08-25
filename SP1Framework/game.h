@@ -38,10 +38,16 @@ enum EKEYS
 // Enumeration for the different screen states
 enum EGAMESTATES
 {
+    //GAMES indicate 1st map to 5th map
+
     S_SPLASHSCREEN,
-    S_GAME,
+    S_GAME1,  
     S_COUNT,
-    S_MENU
+    S_MENU,
+    S_GAME2,
+    S_GAME3,
+    S_GAME4,
+    S_GAME5
 };
 
 // struct for the game character

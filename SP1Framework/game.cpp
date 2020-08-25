@@ -124,7 +124,7 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
     {
     case S_SPLASHSCREEN: // don't handle anything for the splash screen
         break;
-    case S_GAME: gameplayKBHandler(keyboardEvent); // handle gameplay keyboard event 
+    case S_GAME1: gameplayKBHandler(keyboardEvent); // handle gameplay keyboard event 
         break;
     }
 }
@@ -151,7 +151,7 @@ void mouseHandler(const MOUSE_EVENT_RECORD& mouseEvent)
     {
     case S_SPLASHSCREEN: // don't handle anything for the splash screen
         break;
-    case S_GAME: gameplayMouseHandler(mouseEvent); // handle gameplay mouse event
+    case S_GAME1: gameplayMouseHandler(mouseEvent); // handle gameplay mouse event
         break;
     case S_MENU: gameplayMouseHandler(mouseEvent);
     }
@@ -233,7 +233,7 @@ void update(double dt)
     {
         case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
             break;
-        case S_GAME: updateGame(); // gameplay logic when we are in the game
+        case S_GAME1: updateGame(); // gameplay logic when we are in the game
             break;
         case S_MENU: mainMenu();
     }
@@ -288,6 +288,9 @@ void moveCharacter()
     int new_y = g_sChar.m_cLocation.Y;
     if (checkCollision(new_x, new_y) == 2)
     {
+        Beep(440.00, 30);
+        Beep(659.25, 30);
+        Beep(880.00, 30);
         NotCollected -= 1;
         collected += 1;
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
@@ -321,7 +324,7 @@ void render()
     {
     case S_SPLASHSCREEN: renderSplashScreen();
         break;
-    case S_GAME: renderGame();
+    case S_GAME1: renderGame();
         break;
     case S_MENU: mainMenu();
     }
@@ -390,7 +393,7 @@ void renderMap()
     // Set up sample colours, and output shadings
     const WORD colors[] = {
         0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0x434343
+        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0xff6000
     };
 
     COORD c;
@@ -398,7 +401,14 @@ void renderMap()
         for (int j = 0; j < 25; j++) {
             c.X = i;
             c.Y = j;
-            g_Console.writeToBuffer(c, " ", colors[12]);
+            g_Console.writeToBuffer(c, " ", colors[13]);
+        }
+    }
+    for (int i = 0; i < 50; i++) {
+        for (int j = 0; j < 25; j++) {
+            c.X = 15 + i;
+            c.Y = j;
+            g_Console.writeToBuffer(c, " ", colors[11]);
         }
     }
     for (int i = 0; i < 50; i++) {
@@ -411,7 +421,7 @@ void renderMap()
                         g_Console.writeToBuffer(c, " ", colors[12]);
                     }
                     else
-                        g_Console.writeToBuffer(c, "±", colors[11]);
+                        g_Console.writeToBuffer(c, "?", colors[11]);
                     if (currentMap[cMap]->getMapVar(i, j) == 'C') {
                         g_Console.writeToBuffer(c, " ", colors[3]);
                     }
@@ -607,6 +617,7 @@ int checkCollision(int x, int y) {
 }
 
 void changeMap() {
+    collected = 0;
     NotCollected = currentMap[cMap]->getTotalCollectibles();
     for (int i = 0; i < 50; i++) {
         for (int j = 0; j < 25; j++) {
@@ -629,31 +640,17 @@ void mainMenu()
 
     c.Y = 9;
     c.X = 31;
-    g_Console.writeToBuffer(c, "2. Current Score", 0x09);
-
-    c.Y = 10;
-    c.X = 31;
-    g_Console.writeToBuffer(c, "3. Exit", 0x09);
+    g_Console.writeToBuffer(c, "2. Quit", 0x09);
 
     switch (g_mouseEvent.eventFlags)
     {
     case 0:
         if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 8))
         {
-            ss.str("PLAY!");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 1, ss.str(), 0x59);
-            g_eGameState = S_GAME;
-
+            g_eGameState = S_GAME1;
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 9))
         {
-            ss.str("Current Scores!");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
-        }
-        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 47) && (g_mouseEvent.mousePosition.Y == 10))
-        {
-            ss.str("Quit");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
             g_bQuitGame = true;
         }
         break;

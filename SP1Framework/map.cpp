@@ -50,3 +50,7 @@ void map::setTotalCollectibles(int t) {
 void map::addCurrentCollectibles() {
 	currentCollectibles += 1;
 }
+
+int map::getTotalCollectibles() {
+	return totalCollectibles;
+}

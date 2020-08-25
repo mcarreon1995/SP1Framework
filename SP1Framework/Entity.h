@@ -1,10 +1,13 @@
 #pragma once
 #include <iostream>
 #include "Position.h"
+#include "map.h"
+
+using namespace std;
 
 class Entity
 {
-protected:
+protected: 
 	Position myPos;
 public:
 	int getposX();
@@ -14,7 +17,7 @@ public:
 	Entity();
 	~Entity();
 	virtual char getName() = 0;
-	virtual void move();
+	virtual void move(map&);
 	virtual void move(char);
 
 };

@@ -39,5 +39,6 @@ public:
 	void randomCollectibles();
 	void setTotalCollectibles(int t);
 	void addCurrentCollectibles();
+	int getTotalCollectibles();
 };
 

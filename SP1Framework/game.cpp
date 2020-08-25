@@ -62,7 +62,7 @@ void init( void )
     g_sChar.m_cLocation.Y = 23;
     g_sChar.m_bActive = true;
     // sets the width, height and the font name to use in the console
-    g_Console.setConsoleFont(0, 16, L"Consolas");
+    g_Console.setConsoleFont(0, 16, L"Dina");
 
     // remember to set your keyboard handler, so that your functions can be notified of input events
     g_Console.setKeyboardHandler(keyboardHandler);
@@ -126,6 +126,8 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
         break;
     case S_GAME1: gameplayKBHandler(keyboardEvent); // handle gameplay keyboard event 
         break;
+    case S_MENU: gameplayKBHandler(keyboardEvent);
+        break;
     }
 }
 
@@ -177,7 +179,9 @@ void gameplayKBHandler(const KEY_EVENT_RECORD& keyboardEvent)
     case VK_LEFT: key = K_LEFT; break; 
     case VK_RIGHT: key = K_RIGHT; break; 
     case VK_SPACE: key = K_SPACE; break;
-    case VK_ESCAPE: key = K_ESCAPE; break; 
+    case VK_ESCAPE: key = K_ESCAPE; break;
+    case 0x31: key = K_1; break;
+    case 0x33: key = K_3; break;
     }
     // a key pressed event would be one with bKeyDown == true
     // a key released event would be one with bKeyDown == false
@@ -337,7 +341,7 @@ void render()
 void clearScreen()
 {
     // Clears the buffer with this colour attribute
-    g_Console.clearBuffer(0x1F);
+    g_Console.clearBuffer(0);
 }
 
 void renderToScreen()
@@ -559,12 +563,12 @@ void renderFramerate()
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str());*/
 
-    // displays the elapsed time
+    /* displays the elapsed time
     ss.str("");
     ss << g_dElapsedTime << "secs";
     c.X = g_Console.getConsoleSize().X - 11;
     c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str(), 0x59);
+    g_Console.writeToBuffer(c, ss.str(), 0x59); */
 }
 
 void renderScore()
@@ -634,22 +638,65 @@ void mainMenu()
     COORD c = g_Console.getConsoleSize();
     std::ostringstream ss;
 
-    c.Y = 8;
+    
+
+
+    const WORD colors[] = {
+        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
+        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0x434343
+    };
+
+    //Moving Banner
+    char banner[20][20] = { {'-', '-', '-', ' ', ' ', '-', '-', '-', ' ', '-', '-', '-', ' ', ' ', '-', '-', '-'},
+                            {' ', ' ', '|', ' ', ' ', '|', ' ', '|', ' ', ' ', ' ', '|', ' ', ' ', '|', ' ', '|'},
+                            {' ', ' ', '|', ' ', ' ', '|', ' ', '|', ' ', ' ', ' ', '|', ' ', ' ', '|', ' ', '|'},
+                            {' ', ' ', '|', ' ', ' ', '|', ' ', '|', ' ', ' ', ' ', '|', ' ', ' ', '|', ' ', '|'},
+                            {'-', '-', '-', ' ', ' ', '|', ' ', '|', ' ', '-', '-', '-', ' ', ' ', '|', ' ', '|'},
+                            {'|', ' ', ' ', ' ', ' ', '|', ' ', '|', ' ', '|', ' ', ' ', ' ', ' ', '|', ' ', '|'},
+                            {'|', ' ', ' ', ' ', ' ', '|', ' ', '|', ' ', '|', ' ', ' ', ' ', ' ', '|', ' ', '|'},
+                            {'-', '-', '-', ' ', ' ', '-', '-', '-', ' ', '-', '-', '-', ' ', ' ', '-', '-', '-'},
+    };
+
+    for (int i = 0; i < 20; i++)
+    {
+        for (int j = 0; j < 20; j++)
+        {
+            c.Y = 2 + i;
+            c.X = 31 + j;
+            g_Console.writeToBuffer(c, banner[i][j], 0x03);
+        }
+    }
+
+    c.Y = 14;
     c.X = 31;
     g_Console.writeToBuffer(c, "1. Play", 0x03);
 
-    c.Y = 9;
+    c.Y = 15;
     c.X = 31;
-    g_Console.writeToBuffer(c, "2. Quit", 0x09);
+    g_Console.writeToBuffer(c, "2. Scoreboard", 0x09);
 
+    c.Y = 16;
+    c.X = 31;
+    g_Console.writeToBuffer(c, "3. Quit", 0x09);
+
+    //Keyboard Event
+    
+    if (g_skKeyEvent[K_1].keyReleased)
+        g_eGameState = S_GAME1;
+
+    else if (g_skKeyEvent[K_3].keyReleased)
+        g_bQuitGame = true;
+    
+
+    //Mouse Event
     switch (g_mouseEvent.eventFlags)
     {
     case 0:
-        if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 8))
+        if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 14))
         {
             g_eGameState = S_GAME1;
         }
-        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 9))
+        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 16))
         {
             g_bQuitGame = true;
         }

@@ -632,31 +632,17 @@ void mainMenu()
 
     c.Y = 9;
     c.X = 31;
-    g_Console.writeToBuffer(c, "2. Current Score", 0x09);
-
-    c.Y = 10;
-    c.X = 31;
-    g_Console.writeToBuffer(c, "3. Exit", 0x09);
+    g_Console.writeToBuffer(c, "2. Quit", 0x09);
 
     switch (g_mouseEvent.eventFlags)
     {
     case 0:
         if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 8))
         {
-            ss.str("PLAY!");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 1, ss.str(), 0x59);
             g_eGameState = S_GAME1;
-
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 9))
         {
-            ss.str("Current Scores!");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
-        }
-        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 47) && (g_mouseEvent.mousePosition.Y == 10))
-        {
-            ss.str("Quit");
-            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
             g_bQuitGame = true;
         }
         break;

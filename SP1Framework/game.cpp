@@ -11,6 +11,7 @@
 #include "playerVL.h"
 #include <iostream>
 #include <iomanip>
+#include <string>
 #include <sstream>
 
 int cMap = 0;
@@ -34,7 +35,7 @@ SGameChar   g_sChar;
 EGAMESTATES g_eGameState = S_MENU; // initial state
 
 // Console object
-Console g_Console(80, 25, "SP1 Framework");
+Console g_Console(80, 25, "M - Reversal");
 
 
 //--------------------------------------------------------------
@@ -154,6 +155,8 @@ void mouseHandler(const MOUSE_EVENT_RECORD& mouseEvent)
     case S_GAME1: gameplayMouseHandler(mouseEvent); // handle gameplay mouse event
         break;
     case S_MENU: gameplayMouseHandler(mouseEvent);
+        break;
+    case S_LVLCOMP: gameplayMouseHandler(mouseEvent);
     }
 }
 
@@ -236,6 +239,9 @@ void update(double dt)
         case S_GAME1: updateGame(); // gameplay logic when we are in the game
             break;
         case S_MENU: mainMenu();
+            break;
+        case S_LVLCOMP: renderLevelCompleted();
+            break;
     }
 }
 
@@ -294,12 +300,17 @@ void moveCharacter()
         NotCollected -= 1;
         collected += 1;
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
-
-        //code to remove the collectible
     }
-    else if (checkCollision(new_x, new_y) == 3) {
+    if (checkCollision(new_x, new_y) == 3) {
         cMap += 1;
-        changeMap();
+        g_eGameState = S_LVLCOMP;
+        if (collected == currentMap[cMap]->getTotalCollectibles()) {
+            
+        }
+        else {
+            g_sChar.m_cLocation.Y = pos_y;
+            Beep(660.00, 30);
+        }
     }
 }
 void processUserInput()
@@ -365,11 +376,6 @@ void renderGame()
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
     renderScore();
-    if (LevelCompleted == true)
-    {
-        renderTransition();
-        renderLevelCompleted();
-    }
 }
 
 void renderMap()
@@ -393,7 +399,7 @@ void renderMap()
     // Set up sample colours, and output shadings
     const WORD colors[] = {
         0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0xff6000
+        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0
     };
 
     COORD c;
@@ -415,13 +421,13 @@ void renderMap()
         for (int j = 0; j < 25; j++) {
             c.X = 15 + i;
             c.Y = j;
-            if (c.X <= g_sChar.m_cLocation.X + 6 && c.X >= g_sChar.m_cLocation.X - 6) {
-                if (c.Y <= g_sChar.m_cLocation.Y + 3 && c.Y >= g_sChar.m_cLocation.Y - 3) {
+            if (c.X <= g_sChar.m_cLocation.X + 7 && c.X >= g_sChar.m_cLocation.X - 7) {
+                if (c.Y <= g_sChar.m_cLocation.Y + 4 && c.Y >= g_sChar.m_cLocation.Y - 4) {
                     if (currentMap[cMap]->getMapVar(i, j) != '#') {
                         g_Console.writeToBuffer(c, " ", colors[12]);
                     }
                     else
-                        g_Console.writeToBuffer(c, "?", colors[11]);
+                        g_Console.writeToBuffer(c, "²", colors[11]);
                     if (currentMap[cMap]->getMapVar(i, j) == 'C') {
                         g_Console.writeToBuffer(c, " ", colors[3]);
                     }
@@ -449,75 +455,63 @@ void renderCharacter()
 
 void renderLevelCompleted()
 {
-    COORD c;
-    c.X = 12;
-    c.Y = 40;
-    if (roundActive == false) {
-        if ((roundnumber == 1) && (LevelCompleted == true))
+    //std::ostringstream ss;
+    //COORD c;
+    //for (int i = 0; i < 80; i++) {
+    //    for (int j = 0; j < 25; j++) {
+    //        c.X = i;
+    //        c.Y = j;
+    //        g_Console.writeToBuffer(c, " ", 0);
+    //    }
+    //}
+    //c.X = 40;
+    //c.Y = 12;
+    //int score = collected * 2;
+    //totalscore += score;
+    //char round[18] = { "Level   Completed" };
+    //round[7] = (cMap - 1);
+    //if (cMap == 1) {
+    //    g_Console.writeToBuffer(c, "Tutorial Level Completed", 0xF6);
+    //}
+    //else {
+    //    g_Console.writeToBuffer(c, round, 0xF6);
+    //}
+    //c.Y += 2;
+    //g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
+    //c.Y += 2;
+    //g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
+    COORD c = g_Console.getConsoleSize();
+    std::ostringstream ss;
+
+    c.Y = 8;
+    c.X = 31;
+    g_Console.writeToBuffer(c, "1. Play", 0x03);
+
+    c.Y = 9;
+    c.X = 31;
+    g_Console.writeToBuffer(c, "2. Quit", 0x09);
+
+    switch (g_mouseEvent.eventFlags)
+    {
+    case 0:
+        if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 8))
         {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Tutorial Level Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
+            g_eGameState = S_GAME1;
         }
-        else if ((roundnumber == 2) && (LevelCompleted == true))
+        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 9))
         {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 1 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
+            g_bQuitGame = true;
         }
-        else if ((roundnumber == 3) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 2 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 4) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 3 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 5) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 4 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
-        else if ((roundnumber == 6) && (LevelCompleted == true))
-        {
-            score = collected * 2;
-            totalscore += score;
-            g_Console.writeToBuffer(c, "Level 5 Completed", 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Score: ", score, 0xF6);
-            c.Y -= 2;
-            g_Console.writeToBuffer(c, "Total Score: ", totalscore, 0xF6);
-        }
+        break;
+    default:
+        break;
+
     }
 }
 
 void renderTransition()
 {
+    std::ostringstream ss;
     COORD c;
     c.X = 12;
     c.Y = 40;
@@ -615,6 +609,14 @@ void changeMap() {
     for (int i = 0; i < 50; i++) {
         for (int j = 0; j < 25; j++) {
             if (currentMap[cMap]->getMapVar(i, j) == 'S') {
+                g_sChar.m_cLocation.X = 15 + i;
+                g_sChar.m_cLocation.Y = j;
+            }
+        }
+    }
+    for (int i = 0; i < 50; i++) {
+        for (int j = 0; j < 25; j++) {
+            if (currentMap[cMap]->getMapVar(i, j) == 'V') {
                 g_sChar.m_cLocation.X = 15 + i;
                 g_sChar.m_cLocation.Y = j;
             }

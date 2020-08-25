@@ -47,7 +47,8 @@ enum EGAMESTATES
     S_GAME2,
     S_GAME3,
     S_GAME4,
-    S_GAME5
+    S_GAME5,
+    S_LVLCOMP
 };
 
 // struct for the game character

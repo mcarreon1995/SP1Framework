@@ -440,8 +440,8 @@ void renderCharacter()
 void renderLevelCompleted()
 {
     COORD c;
-    c.X = 12;
-    c.Y = 40;
+    c.X = 40;
+    c.Y = 12;
     if (roundActive == false) {
         if ((roundnumber == 1) && (LevelCompleted == true))
         {
@@ -509,8 +509,8 @@ void renderLevelCompleted()
 void renderTransition()
 {
     COORD c;
-    c.X = 12;
-    c.Y = 40;
+    c.X = 40;
+    c.Y = 12;
 
     if (roundnumber == 1)
     {
@@ -568,15 +568,22 @@ void renderScore()
     }
     COORD c;
     std::ostringstream ss;
-    ss << "Collected " << collected << ": " << NotCollected;
+    ss << "Collected " << collected;
     c.X = 0;
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str());
 
     ss.str("");
+    
+    ss << "Not Collected: " << NotCollected;
+    c.X = 0;
+    c.Y = 1;
+    g_Console.writeToBuffer(c, ss.str());
+
+    ss.str("");
     ss << "<Esc> to menu";
     c.X = 0;
-    c.Y = 2;
+    c.Y = 3;
     g_Console.writeToBuffer(c, ss.str());
 }
 // this is an example of how you would use the input events

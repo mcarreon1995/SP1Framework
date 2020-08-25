@@ -420,7 +420,7 @@ void renderMap()
                         g_Console.writeToBuffer(c, " ", colors[12]);
                     }
                     else
-                        g_Console.writeToBuffer(c, "±", colors[11]);
+                        g_Console.writeToBuffer(c, "?", colors[11]);
                     if (currentMap[cMap]->getMapVar(i, j) == 'C') {
                         g_Console.writeToBuffer(c, " ", colors[3]);
                     }

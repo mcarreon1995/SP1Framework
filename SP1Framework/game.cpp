@@ -46,12 +46,14 @@ Console g_Console(80, 25, "M - Reversal");
 
 void init( void )
 { 
+    // sets the initial state for the game
+    g_eGameState = S_MENU;
+
     // Set precision for floating point output
     g_dElapsedTime = 0.0;    
     initializeMaps();
     changeMap();
-    // sets the initial state for the game
-    g_eGameState = S_MENU;
+    
 
     g_sChar.m_cLocation.X = 15 + 1;
     g_sChar.m_cLocation.Y = 23;
@@ -122,6 +124,8 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
     case S_GAME1: gameplayKBHandler(keyboardEvent); // handle gameplay keyboard event 
         break;
     case S_LVLCOMP: gameplayKBHandler(keyboardEvent);
+        break;
+    case S_MENU: gameplayKBHandler(keyboardEvent);
     }
 }
 
@@ -231,9 +235,9 @@ void update(double dt)
     {
         case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
             break;
-        case S_GAME1: updateGame(); // gameplay logic when we are in the game
-            break;
         case S_MENU: mainMenu();
+            break;
+        case S_GAME1: updateGame(); // gameplay logic when we are in the game
             break;
         case S_LVLCOMP: renderLevelCompleted();
             break;
@@ -331,9 +335,9 @@ void render()
     {
     case S_SPLASHSCREEN: renderSplashScreen();
         break;
-    case S_GAME1: renderGame();
-        break;
     case S_MENU: mainMenu();
+        break;
+    case S_GAME1: renderGame();
         break;
     case S_LVLCOMP: renderLevelCompleted();
     }
@@ -609,29 +613,89 @@ void mainMenu()
     COORD c = g_Console.getConsoleSize();
     std::ostringstream ss;
 
-    c.Y = 8;
-    c.X = 31;
+    const WORD colors[] = {
+        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
+        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0x434343
+    };
+
+    //Moving Banner
+    char banner[20][20] = { {'-', '-', '-', ' ', ' ', '-', '-', '-', ' ', '-', '-', '-', ' ', ' ', '-', '-', '-'},
+                            {' ', ' ', '|', ' ', ' ', '|', ' ', '|', ' ', ' ', ' ', '|', ' ', ' ', '|', ' ', '|'},
+                            {' ', ' ', '|', ' ', ' ', '|', ' ', '|', ' ', ' ', ' ', '|', ' ', ' ', '|', ' ', '|'},
+                            {' ', ' ', '|', ' ', ' ', '|', ' ', '|', ' ', ' ', ' ', '|', ' ', ' ', '|', ' ', '|'},
+                            {'-', '-', '-', ' ', ' ', '|', ' ', '|', ' ', '-', '-', '-', ' ', ' ', '|', ' ', '|'},
+                            {'|', ' ', ' ', ' ', ' ', '|', ' ', '|', ' ', '|', ' ', ' ', ' ', ' ', '|', ' ', '|'},
+                            {'|', ' ', ' ', ' ', ' ', '|', ' ', '|', ' ', '|', ' ', ' ', ' ', ' ', '|', ' ', '|'},
+                            {'-', '-', '-', ' ', ' ', '-', '-', '-', ' ', '-', '-', '-', ' ', ' ', '-', '-', '-'},
+    };
+
+    for (int i = 0; i < 20; i++)
+    {
+        for (int j = 0; j < 20; j++)
+        {
+            c.Y = 2 + i;
+            c.X = 29 + j;
+            g_Console.writeToBuffer(c, banner[i][j], 11);
+        }
+    }
+
+    c.Y = 13;
+    c.X = 25;
+    g_Console.writeToBuffer(c, "+-----------------------+", 4);
+
+    c.Y = 14;
+    c.X = 33;
     g_Console.writeToBuffer(c, "1. Play", 0x03);
 
-    c.Y = 9;
-    c.X = 31;
-    g_Console.writeToBuffer(c, "2. Quit", 0x09);
+    c.Y = 15;
+    c.X = 33;
+    g_Console.writeToBuffer(c, "2. Scores", 0x09);
 
+    c.Y = 16;
+    c.X = 33;
+    g_Console.writeToBuffer(c, "3. Quit", 0x09);
+
+    c.Y = 17;
+    c.X = 25;
+    g_Console.writeToBuffer(c, "+-----------------------+", 4);
+
+    //Keyboard Event
+
+    if (g_skKeyEvent[K_1].keyReleased)
+        g_eGameState = S_GAME1;
+
+    else if (g_skKeyEvent[K_3].keyReleased)
+        g_bQuitGame = true;
+
+    if ((g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y >= 14) && (g_mouseEvent.mousePosition.Y <= 16))
+    {
+        c.X = 28;
+        c.Y = g_mouseEvent.mousePosition.Y;
+        ss.str("");
+        ss << "||";
+        g_Console.writeToBuffer(c, ss.str(), 5);
+        ss.str("");
+
+        c.X = 45;
+        c.Y = g_mouseEvent.mousePosition.Y;
+        ss.str("");
+        ss << "||";
+        g_Console.writeToBuffer(c, ss.str(), 5);
+        ss.str("");
+    }
+
+    //Mouse Event
     switch (g_mouseEvent.eventFlags)
     {
     case 0:
-        if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 8))
+        if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 14))
         {
             g_eGameState = S_GAME1;
         }
-        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 9))
+        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 16))
         {
             g_bQuitGame = true;
         }
-        break;
-    default:
-        break;
-
     }
 }
 

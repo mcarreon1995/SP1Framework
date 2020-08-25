@@ -288,6 +288,8 @@ void moveCharacter()
     int new_y = g_sChar.m_cLocation.Y;
     if (checkCollision(new_x, new_y) == 2)
     {
+        Beep(783.99, 30);
+        Beep(783.99, 30);
         NotCollected -= 1;
         collected += 1;
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
@@ -390,7 +392,7 @@ void renderMap()
     // Set up sample colours, and output shadings
     const WORD colors[] = {
         0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0x434343
+        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0xff6000
     };
 
     COORD c;
@@ -398,7 +400,14 @@ void renderMap()
         for (int j = 0; j < 25; j++) {
             c.X = i;
             c.Y = j;
-            g_Console.writeToBuffer(c, " ", colors[12]);
+            g_Console.writeToBuffer(c, " ", colors[13]);
+        }
+    }
+    for (int i = 0; i < 50; i++) {
+        for (int j = 0; j < 25; j++) {
+            c.X = 15 + i;
+            c.Y = j;
+            g_Console.writeToBuffer(c, " ", colors[11]);
         }
     }
     for (int i = 0; i < 50; i++) {
@@ -600,6 +609,7 @@ int checkCollision(int x, int y) {
 }
 
 void changeMap() {
+    collected = 0;
     NotCollected = currentMap[cMap]->getTotalCollectibles();
     for (int i = 0; i < 50; i++) {
         for (int j = 0; j < 25; j++) {

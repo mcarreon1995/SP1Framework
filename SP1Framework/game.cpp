@@ -47,11 +47,13 @@ Console g_Console(80, 25, "SP1 Framework");
 
 void init( void )
 {
+
     currentMap[0] = new maze_01;
     currentMap[1] = new maze_02;
     currentMap[2] = new maze_03;
     // Set precision for floating point output
     g_dElapsedTime = 0.0;    
+    changeMap();
 
     // sets the initial state for the game
     g_eGameState = S_MENU;
@@ -286,7 +288,7 @@ void moveCharacter()
     int new_y = g_sChar.m_cLocation.Y;
     if (checkCollision(new_x, new_y) == 2)
     {
-        
+        NotCollected -= 1;
         collected += 1;
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
 
@@ -301,7 +303,7 @@ void processUserInput()
 {
     // quits the game if player hits the escape key
     if (g_skKeyEvent[K_ESCAPE].keyReleased)
-        g_bQuitGame = true;    
+        g_eGameState = S_MENU;
 }
 
 //--------------------------------------------------------------
@@ -572,9 +574,9 @@ void renderScore()
     g_Console.writeToBuffer(c, ss.str());
 
     ss.str("");
-    ss << "Press <Esc> key to quit the game";
-    c.X = 25;
-    c.Y = 24;
+    ss << "<Esc> to menu";
+    c.X = 0;
+    c.Y = 2;
     g_Console.writeToBuffer(c, ss.str());
 }
 // this is an example of how you would use the input events

@@ -18,7 +18,7 @@ void Enemy_Fire::move(map &themap) {
 	if (upOrDown == 'U') {
 		oldX = fireTrailX;
 		oldY = fireTrailY;
-		fireTrailX = this->getposY();
+		fireTrailX = this->getposX();
 		fireTrailY = this->getposY();
 		if (themap.getMapVar(this->getposX() + 1, this->getposY()) == '#') {
 			upOrDown = 'D';

@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClCompile Include="aNitrate.cpp" />
     <ClCompile Include="Bat.cpp" />
+    <ClCompile Include="BatBullet.cpp" />
     <ClCompile Include="Enemy_Fire.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Framework\console.cpp" />
@@ -102,6 +103,7 @@
   <ItemGroup>
     <ClInclude Include="ANitrate.h" />
     <ClInclude Include="Bat.h" />
+    <ClInclude Include="BatBullet.h" />
     <ClInclude Include="Enemy_Fire.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Framework\console.h" />

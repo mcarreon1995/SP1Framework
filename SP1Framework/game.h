@@ -84,6 +84,7 @@ void renderTransition();   // render the transition screen
 void renderLevelCompleted(); //render Level Completion Screen
 void renderScore();
 void mainMenu();
+void initializeMaps();
 
 // keyboard and mouse input event managers
 void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent);  // define this function for the console to call when there are keyboard events

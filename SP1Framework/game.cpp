@@ -179,7 +179,10 @@ void gameplayKBHandler(const KEY_EVENT_RECORD& keyboardEvent)
     case VK_LEFT: key = K_LEFT; break; 
     case VK_RIGHT: key = K_RIGHT; break; 
     case VK_SPACE: key = K_SPACE; break;
-    case VK_ESCAPE: key = K_ESCAPE; break; 
+    case VK_ESCAPE: key = K_ESCAPE; break;
+    //case 0x31: key = K_1; break;
+    //case 0x32: key = K_2; break;
+    //case 0x33: key = K_3; break;
     }
     // a key pressed event would be one with bKeyDown == true
     // a key released event would be one with bKeyDown == false
@@ -350,7 +353,7 @@ void render()
 void clearScreen()
 {
     // Clears the buffer with this colour attribute
-    g_Console.clearBuffer(0x1F);
+    g_Console.clearBuffer(0);
 }
 
 void renderToScreen()
@@ -661,25 +664,25 @@ void mainMenu()
 
     //Keyboard Event
 
-    if (g_skKeyEvent[K_1].keyReleased)
-        g_eGameState = S_GAME1;
+    //if (g_skKeyEvent[K_1].keyReleased)
+    //    g_eGameState = S_GAME1;
 
-    else if (g_skKeyEvent[K_3].keyReleased)
-        g_bQuitGame = true;
+    //else if (g_skKeyEvent[K_3].keyReleased)
+    //    g_bQuitGame = true;
 
     if ((g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y >= 14) && (g_mouseEvent.mousePosition.Y <= 16))
     {
-        c.X = 28;
+        c.X = 18;
         c.Y = g_mouseEvent.mousePosition.Y;
         ss.str("");
-        ss << "||";
+        ss << "__________||";
         g_Console.writeToBuffer(c, ss.str(), 5);
         ss.str("");
 
         c.X = 45;
         c.Y = g_mouseEvent.mousePosition.Y;
         ss.str("");
-        ss << "||";
+        ss << "||__________";
         g_Console.writeToBuffer(c, ss.str(), 5);
         ss.str("");
     }

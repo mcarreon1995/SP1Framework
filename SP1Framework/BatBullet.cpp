@@ -9,7 +9,7 @@ BatBullet::~BatBullet() {
 }
 
 char BatBullet::getName() {
-	return 'F';
+	return '* ';
 }
 
 void BatBullet::move(map& themap) {

@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <string>
 #include <sstream>
+#include <fstream>
 
 int cMap = 0;
 
@@ -491,6 +492,29 @@ void renderLevelCompleted()
     if (g_skKeyEvent[K_SPACE].keyDown) {
         g_eGameState = S_GAME1;
         changeMap();
+    }
+
+    std::ifstream input("Highest_Score.txt");
+    //incase for some odd reason the txt file cant be opened
+    if (!input.is_open())
+    {
+        std::cout << "Unable to read file\n";
+        return;
+    }
+
+    int Highest_Score;
+    input >> Highest_Score;
+
+    std::ofstream output("Highest_Score.txt");
+    // if the totalscore is higher than the highest_score integer stored inside the text file it will delete the old highest_Score and update the totalscore in.
+    // if the totalscore is lower than the highest_Score integer stored, then it will not update the data stored in it.
+    if (totalscore > Highest_Score) 
+    {
+        output << totalscore;
+    }
+    else
+    {
+        output << Highest_Score;
     }
 }
 

@@ -516,6 +516,14 @@ void renderLevelCompleted()
     {
         output << Highest_Score;
     }
+    
+    //Instructions: If u need to cout the text in the file the code is :
+    // string <anything>; (used to output the text file)
+    //std::ifstream input("Highest_Score.txt")
+    //while (getline (input, <wtv name u gave to to define the string above>))
+    //{
+    //cout << <wtv name u gave to to define the string above>
+    //}
 }
 
 void renderTransition()

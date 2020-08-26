@@ -14,7 +14,7 @@ char Guard::getName() {
 }
 
 void Guard::move(map &themap) {
-	if (Direction == V) {
+	if (Direction == 'V') {
 		if (pOrM == 'P') {
 			oldX = this->getposX();
 			oldY = this->getposY();

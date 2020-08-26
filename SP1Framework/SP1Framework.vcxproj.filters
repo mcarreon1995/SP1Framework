@@ -39,19 +39,7 @@
     <ClCompile Include="map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="maze_01.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="playerVL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="maze_05.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="maze_02.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="maze_03.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Position.cpp">
@@ -107,22 +95,10 @@
     <ClInclude Include="map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="maze_01.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="playerVL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="maze_05.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="maze_02.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="maze_03.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ANitrate.h">

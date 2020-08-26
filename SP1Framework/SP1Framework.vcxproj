@@ -90,6 +90,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="Masks.cpp" />
+    <ClCompile Include="maze_01.cpp" />
+    <ClCompile Include="maze_02.cpp" />
+    <ClCompile Include="maze_03.cpp" />
+    <ClCompile Include="maze_05.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="playerVL.cpp" />
     <ClCompile Include="Position.cpp" />
@@ -108,6 +112,10 @@
     <ClInclude Include="Guard.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="Masks.h" />
+    <ClInclude Include="maze_01.h" />
+    <ClInclude Include="maze_02.h" />
+    <ClInclude Include="maze_03.h" />
+    <ClInclude Include="maze_05.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="playerVL.h" />
     <ClInclude Include="Position.h" />

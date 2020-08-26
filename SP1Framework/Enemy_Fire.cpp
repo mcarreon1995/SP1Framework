@@ -14,6 +14,8 @@ char Enemy_Fire::getName() {
 	return 'F';
 }
 
+
+
 void Enemy_Fire::move(map &themap) {
 	if (upOrDown == 'U') {
 		oldX = fireTrailX;

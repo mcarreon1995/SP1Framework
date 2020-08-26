@@ -1,5 +1,6 @@
 #include "BatBullet.h"
 char travelDirection;
+int oldX, oldY;
 BatBullet::BatBullet(char direction) {
 	char travelDirection = direction;
 }
@@ -14,8 +15,8 @@ char BatBullet::getName() {
 
 void BatBullet::move(map& themap) {
 	bool skip = 0;
-	oldX = this->getposX();
-	oldY = this->getposY();
+	int oldX = this->getposX();
+	int oldY = this->getposY();
 	if (travelDirection == 'W') {
 		if (themap.getMapVar(this->getposX() - 1, this->getposY()) == '#') {
 			delete this;

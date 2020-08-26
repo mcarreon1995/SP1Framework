@@ -4,8 +4,8 @@ class BatBullet :
     public Entity
 {
 private:
-	int oldX, oldY;
 	char travelDirection;
+	int oldX, oldY;
 public:
 	BatBullet(char);
 	~BatBullet();

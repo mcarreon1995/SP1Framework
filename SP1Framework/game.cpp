@@ -515,6 +515,7 @@ void renderLevelCompleted()
 
     int Highest_Score;
     input >> Highest_Score;
+    input.close();
 
     std::ofstream output("Highest_Score.txt");
     // if the totalscore is higher than the highest_score integer stored inside the text file it will delete the old highest_Score and update the totalscore in.
@@ -527,6 +528,8 @@ void renderLevelCompleted()
     {
         output << Highest_Score;
     }
+
+    output.close();
     
     //Instructions: If u need to cout the text in the file the code is :
     // string <anything>; (used to output the text file)
@@ -535,6 +538,32 @@ void renderLevelCompleted()
     //{
     //cout << <wtv name u gave to to define the string above>
     //}
+
+    std::ifstream time("Time_Check.txt");
+    //incase for some odd reason the txt file cant be opened
+    if (!time.is_open())
+    {
+        std::cout << "Unable to read file\n";
+        return;
+    }
+
+    double Time_Check;
+    input >> Time_Check;
+    time.close();
+
+    std::ofstream timeout("Time_Check.txt");
+    // if the totalscore is higher than the highest_score integer stored inside the text file it will delete the old highest_Score and update the totalscore in.
+    // if the totalscore is lower than the highest_Score integer stored, then it will not update the data stored in it.
+    if (g_dElapsedTime < Time_Check)
+    {
+        timeout << g_dElapsedTime;
+    }
+    else
+    {
+        timeout << Time_Check;
+    }
+
+    timeout.close();
 }
 
 void renderTransition()
@@ -610,6 +639,17 @@ void renderScore()
     c.X = 0;
     c.Y = 2;
     g_Console.writeToBuffer(c, ss.str());
+
+    ss.str("");
+    ss << g_dElapsedTime << "secs";
+    c.X = g_Console.getConsoleSize().X - 11;
+    c.Y = 0;
+    g_Console.writeToBuffer(c, ss.str(), 0x59);
+}
+
+void ScoreMenu()
+{
+
 }
 // this is an example of how you would use the input events
 void renderInputEvents()
@@ -642,6 +682,8 @@ void changeMap() {
             }
         }
     }
+
+    g_dElapsedTime = 0;
     //for (int i = 0; i < 50; i++) {
     //    for (int j = 0; j < 25; j++) {
     //        if (currentMap[cMap]->getMapVar(i, j) == 'V') {

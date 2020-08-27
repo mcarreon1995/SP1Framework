@@ -87,6 +87,7 @@
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="Guard.cpp" />
+    <ClCompile Include="Hacker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="Masks.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="Guard.h" />
+    <ClInclude Include="Hacker.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="Masks.h" />
     <ClInclude Include="Player.h" />

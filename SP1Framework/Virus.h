@@ -3,10 +3,15 @@
 class Virus :
     public Entity
 {
+private:
+	char pOrM;
+	char travelDirection;
+	int oldX, oldY;
 public:
 	Virus();
+	Virus(char);
 	~Virus();
 	char getName();
-	void move();
+	void move(map&);
 };
 

@@ -688,8 +688,8 @@ void changeMap() {
             }
         }
     }
-    saveTime = g_dElapsedTime;
-    g_dElapsedTime = 0.0;
+    
+    
     //for (int i = 0; i < 50; i++) {
     //    for (int j = 0; j < 25; j++) {
     //        if (currentMap[cMap]->getMapVar(i, j) == 'V') {
@@ -1110,6 +1110,7 @@ void moveEnemy() {
 
 void resetGame() {
     cMap = 0;
+    
     changeMap();
 }
 char letter[3] = { 65, 65, 65 };

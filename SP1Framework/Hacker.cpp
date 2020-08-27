@@ -1,20 +1,19 @@
-#include "Guard.h"
+#include "Hacker.h"
+char Hacker::pOrM = 'P';
 
-char Guard::pOrM = 'P';
-
-Guard::Guard(char Direction) {
+Hacker::Hacker(char Direction) {
 	char travelDirection = Direction;
 }
 
-Guard::~Guard() {
+Hacker::~Hacker() {
 
 }
 
-char Guard::getName() {
+char Hacker::getName() {
 	return 'G';
 }
 
-void Guard::move(map &themap) {
+void Hacker::move(map& themap) {
 	if (travelDirection == 'V') {
 		if (pOrM == 'P') {
 			if (themap.getMapVar(this->getposX() + 1, this->getposY()) == '#') {

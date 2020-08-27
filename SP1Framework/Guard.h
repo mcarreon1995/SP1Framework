@@ -2,10 +2,14 @@
 #include "Entity.h"
 class Guard :public Entity
 {
+private:
+	static char pOrM;
+	char travelDirection;
+	int oldX, oldY;
 public:
-	Guard();
+	Guard(char);
 	~Guard();
 	char getName();
-	void move();
+	void move(map&);
 };
 

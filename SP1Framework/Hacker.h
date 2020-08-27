@@ -1,6 +1,6 @@
 #pragma once
 #include "Entity.h"
-class Virus :
+class Hacker :
     public Entity
 {
 private:
@@ -8,9 +8,8 @@ private:
 	char travelDirection;
 	int oldX, oldY;
 public:
-	Virus(char);
-	~Virus();
+	Hacker(char);
+	~Hacker();
 	char getName();
 	void move(map&);
 };
-

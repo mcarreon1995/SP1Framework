@@ -27,6 +27,8 @@ int score = 0;
 int totalscore = 0;
 bool roundActive = false;
 
+int arrowMenu = 0;
+
 // Game specific variables here
 SGameChar   g_sChar;
 EGAMESTATES g_eGameState = S_MENU; // initial state
@@ -125,6 +127,8 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
     case S_LVLCOMP: gameplayKBHandler(keyboardEvent);
         break;
     case S_MENU: gameplayKBHandler(keyboardEvent);
+        break;
+    case S_ENDGAME: gameplayKBHandler(keyboardEvent);
     }
 }
 
@@ -155,6 +159,8 @@ void mouseHandler(const MOUSE_EVENT_RECORD& mouseEvent)
     case S_MENU: gameplayMouseHandler(mouseEvent);
         break;
     case S_LVLCOMP:;
+        break;
+    case S_ENDGAME:;
     }
 }
 
@@ -237,13 +243,15 @@ void update(double dt)
     {
         case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
             break;
-        case S_MENU: mainMenu();
+        case S_MENU: menuInput();
             break;
         case S_GAME1: updateGame(); // gameplay logic when we are in the game
             break;
         case S_LVLCOMP: renderLevelCompleted();
             break;
         case S_TRANS: renderTransition();
+            break;
+        case S_ENDGAME: endInput();
     }
 }
 
@@ -283,7 +291,7 @@ void moveCharacter()
         //Beep(783.99, 30);
         g_sChar.m_cLocation.Y++;        
     }
-    if (g_skKeyEvent[K_RIGHT].keyDown && g_sChar.m_cLocation.X < 64 && checkCollision(pos_x + 1, pos_y) != 1)
+    if (g_skKeyEvent[K_RIGHT].keyReleased && g_sChar.m_cLocation.X < 64 && checkCollision(pos_x + 1, pos_y) != 1)
     {
         //Beep(783.99, 30);
         g_sChar.m_cLocation.X++;        
@@ -340,11 +348,13 @@ void render()
     {
     case S_SPLASHSCREEN: renderSplashScreen();
         break;
-    case S_MENU: mainMenu();
+    case S_MENU: renderMenu();
         break;
     case S_GAME1: renderGame();
         break;
     case S_LVLCOMP: renderLevelCompleted();
+        break;
+    case S_ENDGAME: renderEndscreen();
     }
     renderFramerate();      // renders debug information, frame rate, elapsed time, etc
     renderInputEvents();    // renders status of input events
@@ -642,7 +652,7 @@ void changeMap() {
     //}
 }
 
-void mainMenu()
+void renderMenu()
 {
     COORD c = g_Console.getConsoleSize();
     std::ostringstream ss;
@@ -692,14 +702,6 @@ void mainMenu()
     c.X = 25;
     g_Console.writeToBuffer(c, "+-----------------------+", 4);
 
-    //Keyboard Event
-
-    //if (g_skKeyEvent[K_1].keyReleased)
-    //    g_eGameState = S_GAME1;
-
-    //else if (g_skKeyEvent[K_3].keyReleased)
-    //    g_bQuitGame = true;
-
     if ((g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y >= 14) && (g_mouseEvent.mousePosition.Y <= 16))
     {
         c.X = 18;
@@ -715,15 +717,62 @@ void mainMenu()
         ss << "||__________";
         g_Console.writeToBuffer(c, ss.str(), 5);
         ss.str("");
-    }
 
+        arrowMenu = g_mouseEvent.mousePosition.Y - 14;
+    }
+    else {
+        c.X = 18;
+        c.Y = arrowMenu+14;
+        ss.str("");
+        ss << "__________||";
+        g_Console.writeToBuffer(c, ss.str(), 5);
+        ss.str("");
+
+        c.X = 45;
+        c.Y = arrowMenu+14;
+        ss.str("");
+        ss << "||__________";
+        g_Console.writeToBuffer(c, ss.str(), 5);
+        ss.str("");
+    }
+}
+
+void menuInput() {
+    //Keyboard Event
+    if (g_skKeyEvent[K_1].keyReleased){
+        g_eGameState = S_GAME1;
+    }
+    if (g_skKeyEvent[K_3].keyReleased) {
+        g_bQuitGame = true;
+    }
+    if (g_skKeyEvent[K_DOWN].keyReleased) {
+        if (arrowMenu < 2) {
+            arrowMenu++;
+        }
+    }
+    if (g_skKeyEvent[K_UP].keyReleased) {
+        if (arrowMenu > 0) {
+            arrowMenu--;
+        }
+    }
+    if (g_skKeyEvent[K_SPACE].keyReleased) {
+        switch (arrowMenu) {
+        case 0:
+            g_eGameState = S_GAME1;
+            break;
+        case 1:
+            break;
+        case 2:
+            g_bQuitGame = true;
+        }
+    }
     //Mouse Event
     switch (g_mouseEvent.eventFlags)
     {
     case 0:
         if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 14))
         {
-            g_eGameState = S_GAME1;
+            g_eGameState = S_ENDGAME;
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 16))
         {
@@ -937,4 +986,52 @@ void initializeMaps() {
 void resetGame() {
     cMap = 0;
     changeMap();
+}
+char letter[3] = { 65, 65, 65 };
+int letterNum[3] = { 65, 65, 65 };
+int arrowPos = 0;
+
+void renderEndscreen() {
+    COORD c;
+    c.X = 40;
+    c.Y = 12;
+
+    for (int i = 0; i < 3; i++) {
+        if (i == arrowPos) {
+            c.Y += 1;
+            g_Console.writeToBuffer(c, '^');
+            c.Y -= 1;
+        }
+        g_Console.writeToBuffer(c, letter[i]);
+        c.X += 1;
+    }
+}
+
+void endInput() {
+    if (g_skKeyEvent[K_UP].keyReleased)
+    {
+        if (letterNum[arrowPos] > 65) {
+            letterNum[arrowPos]--;
+            letter[arrowPos] = letterNum[arrowPos];
+        } 
+    }
+    if (g_skKeyEvent[K_LEFT].keyReleased)
+    {
+        if (arrowPos > 0) {
+            arrowPos -= 1;
+        }
+    }
+    if (g_skKeyEvent[K_DOWN].keyReleased)
+    {
+        if (letterNum[arrowPos] < 90) {
+            letterNum[arrowPos]++;
+            letter[arrowPos] = letterNum[arrowPos];
+        }
+    }
+    if (g_skKeyEvent[K_RIGHT].keyReleased)
+    {
+        if (arrowPos < 2) {
+            arrowPos += 1;
+        }
+    }
 }

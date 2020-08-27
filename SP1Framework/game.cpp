@@ -12,12 +12,13 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <ctime>
 
 int cMap = 0;
 
+Enemy_Fire FIRE('F');
 map* currentMap[6] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
-
-Entity* enemyPtr[6][5];
+Entity* enemyPtr[5];
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 SKeyEvent g_skKeyEvent[K_COUNT];
@@ -57,7 +58,8 @@ void init( void )
     g_dElapsedTime = 0.0;    
     initializeMaps();
     changeMap();
-    
+    FIRE.setposX(4);
+    FIRE.setposY(2);
 
     g_sChar.m_cLocation.X = 15 + 1;
     g_sChar.m_cLocation.Y = 23;
@@ -272,10 +274,12 @@ void updateGame()       // gameplay logic
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
+    moveEnemy();
 }
 
 void moveCharacter()
 {    
+
     // Updating the location of the character based on the key release
     // providing a beep sound whenver we shift the character
     int pos_x = g_sChar.m_cLocation.X - 15;
@@ -284,7 +288,8 @@ void moveCharacter()
     if (g_skKeyEvent[K_UP].keyDown && g_sChar.m_cLocation.Y > 0 && checkCollision(pos_x, pos_y - 1) != 1)
     {
         //Beep(783.99, 30);
-        g_sChar.m_cLocation.Y--;       
+        g_sChar.m_cLocation.Y--;      
+
     }
     if (g_skKeyEvent[K_LEFT].keyDown && g_sChar.m_cLocation.X > 15 && checkCollision(pos_x - 1, pos_y) != 1)
     {
@@ -300,6 +305,7 @@ void moveCharacter()
     {
         //Beep(783.99, 30);
         g_sChar.m_cLocation.X++;        
+
     }
     if (g_skKeyEvent[K_SPACE].keyDown)
     {
@@ -315,6 +321,7 @@ void moveCharacter()
         NotCollected -= 1;
         collected += 1;
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
+        
     }
     if (checkCollision(new_x, new_y) == 3) {
         if (collected == currentMap[cMap]->getTotalCollectibles()) {
@@ -399,8 +406,8 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
-    //moveEnemy();
     renderScore();
+    
 }
 
 void renderMap()
@@ -458,6 +465,9 @@ void renderMap()
                     }
                     else if (currentMap[cMap]->getMapVar(i, j) == 'E') {
                         g_Console.writeToBuffer(c, " ", colors[4]);
+                    }
+                    else if (currentMap[cMap]->getMapVar(i, j) == 'F') {
+                        g_Console.writeToBuffer(c, "F", colors[2]);
                     }
                 }
             }
@@ -865,6 +875,7 @@ void menuInput() {
 }
 
 void initializeMaps() {
+    
     srand(time(NULL));
     char maze_1_Array[25][50] = {
         {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#',},
@@ -1077,22 +1088,32 @@ void initializeEnemy(int m) {
                     enemyDir = currentMap[i]->getMapVar(x, y);
                     switch (m) {
                     case 0: case 1:
-                        enemyPtr[i][enemyNumber] = new Enemy_Fire(enemyDir);
+                        enemyPtr[enemyNumber] = new Enemy_Fire(enemyDir);
                     }
                     enemyNumber++;
                 }
             }
         }
     }
+    //for (int x = 0; x < 50; x++) {
+    //    for (int y = 0; y < 25; y++) {
+    //        switch (currentMap[0]->getMapVar(x, y)) {
+    //        case 'W': case 'A': case 'S': case 'D':
+    //            FIRE.setposX(x);
+    //            FIRE.setposY(y);
+    //        }
+    //    }
+    //}
 }
-
+int i = 0;
+int x = 4;
+int y = 2;
+int moveTimer = 0;
 void moveEnemy() {
-    COORD c;
-    for (int i = 0; i < 5; i++) {
-        enemyPtr[cMap][i]->move(*currentMap[i]);
-        c.X = enemyPtr[cMap][i]->getposX()+15;
-        c.Y = enemyPtr[cMap][i]->getposY();
-        g_Console.writeToBuffer(c, "F");
+    moveTimer += 1;
+    if (moveTimer == 90) {
+        FIRE.move(*currentMap[cMap]);
+        moveTimer = 0;
     }
 }
 

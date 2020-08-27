@@ -32,10 +32,10 @@ enum EKEYS
     K_RIGHT,
     K_ESCAPE,
     K_SPACE,
-    K_COUNT,
     K_1,
     K_2,
-    K_3
+    K_3,
+    K_COUNT
 };
 
 // Enumeration for the different screen states
@@ -52,7 +52,8 @@ enum EGAMESTATES
     S_GAME4,
     S_GAME5,
     S_LVLCOMP,
-    S_TRANS
+    S_TRANS,
+    S_ENDGAME
 };
 
 // struct for the game character
@@ -86,9 +87,12 @@ void renderInputEvents();   // renders the status of input events
 void renderTransition();   // render the transition screen
 void renderLevelCompleted(); //render Level Completion Screen
 void renderScore();
-void mainMenu();
+void renderMenu();
 void initializeMaps();
 void resetGame();
+void endInput();
+void renderEndscreen();
+void menuInput();  
 
 // keyboard and mouse input event managers
 void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent);  // define this function for the console to call when there are keyboard events

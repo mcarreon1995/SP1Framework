@@ -251,6 +251,8 @@ void update(double dt)
             break;
         case S_TRANS: renderTransition();
             break;
+        case S_SCORE: scorePage();
+            break;
         case S_ENDGAME: endInput();
     }
 }
@@ -353,6 +355,8 @@ void render()
     case S_GAME1: renderGame();
         break;
     case S_LVLCOMP: renderLevelCompleted();
+        break;
+    case S_SCORE: scorePage();
         break;
     case S_ENDGAME: renderEndscreen();
     }
@@ -776,6 +780,37 @@ void renderMenu()
     }
 }
 
+//Leaderboard Page
+void scorePage()
+{
+    COORD c;
+
+    c.Y = 9;
+    c.X = 28.9;
+    g_Console.writeToBuffer(c, "DEFENDING CHAMPION", 4);
+
+    c.Y = 10;
+    c.X = 25;
+    g_Console.writeToBuffer(c, "+-----------------------+", 12);
+
+    std::string HighS;
+    std::ifstream input("Highest_Score.txt");
+    while (getline(input, HighS))
+    {
+        c.Y = 13;
+        c.X = 25;
+        g_Console.writeToBuffer(c, HighS, 12);
+    }
+
+    c.Y = 14;
+    c.X = 25;
+    g_Console.writeToBuffer(c, "+-----------------------+", 12);
+
+    
+
+
+}
+
 void menuInput() {
     //Keyboard Event
     if (g_skKeyEvent[K_1].keyReleased){
@@ -800,6 +835,7 @@ void menuInput() {
             g_eGameState = S_GAME1;
             break;
         case 1:
+            g_eGameState = S_SCORE;
             break;
         case 2:
             g_bQuitGame = true;
@@ -816,6 +852,10 @@ void menuInput() {
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 16))
         {
             g_bQuitGame = true;
+        }
+        else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 15))
+        {
+            g_eGameState = S_SCORE;
         }
     }
 }

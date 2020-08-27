@@ -399,7 +399,7 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
-    moveEnemy();
+    //moveEnemy();
     renderScore();
 }
 
@@ -851,7 +851,7 @@ void menuInput() {
     case 0:
         if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 14))
         {
-            g_eGameState = S_ENDGAME;
+            g_eGameState = S_GAME1;
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 16))
         {

@@ -637,10 +637,7 @@ void renderScore()
     g_Console.writeToBuffer(c, ss.str(), 0x59);
 }
 
-void ScoreMenu()
-{
 
-}
 // this is an example of how you would use the input events
 void renderInputEvents()
 {

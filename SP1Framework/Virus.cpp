@@ -91,6 +91,8 @@ void Virus::move(map& themap) {
 			}
 			else {
 				cout << "Bugged!!" << endl;
+			}
+
 		}
 	}
 

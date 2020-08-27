@@ -4,7 +4,7 @@ class Virus :
     public Entity
 {
 private:
-	static char pOrM;
+    char pOrM;
 	char travelDirection;
 	int oldX, oldY;
 public:

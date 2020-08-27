@@ -3,7 +3,7 @@
 class Enemy_Fire:public Entity
 {
 private:
-	static char pOrM;
+	char pOrM = 'P';
 	char travelDirection;
 	int fireTrail1X, fireTrail1Y, fireTrail2X, fireTrail2Y, fireTrail3X, fireTrail3Y, oldX, oldY;
 public:

@@ -3,7 +3,7 @@
 class Guard :public Entity
 {
 private:
-	static char pOrM;
+	char pOrM = 'P';
 	char travelDirection;
 	int oldX, oldY;
 public:

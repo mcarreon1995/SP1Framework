@@ -20,7 +20,7 @@ void Hacker::move(map& themap) {
 				pOrM = 'M';
 				this->setposX(this->getposX() - 1);
 			}
-			else if (themap.getMapVar(this->getposX() + 1, this->getposY()) == 'P') {
+			else if (themap.getMapVar(this->getposX() + 1, this->getposY()) == (char)1) {
 				//end game criteria
 			}
 			else if (themap.getMapVar(this->getposX() + 1, this->getposY()) == ' ') {
@@ -35,7 +35,7 @@ void Hacker::move(map& themap) {
 				pOrM = 'P';
 				this->setposX(this->getposX() + 1);
 			}
-			else if (themap.getMapVar(this->getposX() - 1, this->getposY()) == 'P') {
+			else if (themap.getMapVar(this->getposX() - 1, this->getposY()) == (char)1) {
 				//end game criteria
 			}
 			else if (themap.getMapVar(this->getposX() - 1, this->getposY()) == ' ') {
@@ -54,7 +54,7 @@ void Hacker::move(map& themap) {
 				pOrM = 'M';
 				this->setposY(this->getposY() - 1);
 			}
-			else if (themap.getMapVar(this->getposX(), this->getposY() + 1) == 'P') {
+			else if (themap.getMapVar(this->getposX(), this->getposY() + 1) == (char)1) {
 				//end game criteria
 			}
 			else if (themap.getMapVar(this->getposX(), this->getposY() + 1) == ' ') {
@@ -69,7 +69,7 @@ void Hacker::move(map& themap) {
 				pOrM = 'P';
 				this->setposY(this->getposY() + 1);
 			}
-			else if (themap.getMapVar(this->getposX(), this->getposY() - 1) == 'P') {
+			else if (themap.getMapVar(this->getposX(), this->getposY() - 1) == (char)1) {
 				//end game criteria
 			}
 			else if (themap.getMapVar(this->getposX(), this->getposY() - 1) == ' ') {

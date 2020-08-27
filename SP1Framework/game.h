@@ -53,6 +53,7 @@ enum EGAMESTATES
     S_GAME5,
     S_LVLCOMP,
     S_TRANS,
+    S_SCORE,
     S_ENDGAME
 };
 
@@ -92,8 +93,8 @@ void initializeMaps();
 void resetGame();
 void endInput();
 void renderEndscreen();
-void menuInput();  
-void moveEnemy();
+void menuInput(); 
+void scorePage();
 
 // keyboard and mouse input event managers
 void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent);  // define this function for the console to call when there are keyboard events

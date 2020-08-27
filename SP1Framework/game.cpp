@@ -557,15 +557,15 @@ void renderLevelCompleted()
     }
 
     double Time_Check;
-    input >> Time_Check;
+    time >> Time_Check;
     time.close();
 
     std::ofstream timeout("Time_Check.txt");
     // if the totalscore is higher than the highest_score integer stored inside the text file it will delete the old highest_Score and update the totalscore in.
     // if the totalscore is lower than the highest_Score integer stored, then it will not update the data stored in it.
-    if (saveTime < Time_Check)
+    if (g_dElapsedTime < Time_Check)
     {
-        timeout << saveTime;
+        timeout << g_dElapsedTime;
     }
     else
     {
@@ -818,7 +818,7 @@ void scorePage()
     }
     time.close();
 
-    c.Y = 13;
+    c.Y = 14;
     c.X = 25;
     g_Console.writeToBuffer(c, "+-----------------------+", 12);
 

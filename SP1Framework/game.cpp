@@ -30,6 +30,7 @@ int NotCollected = 0;
 int score = 0;
 int totalscore = 0;
 bool roundActive = false;
+double saveTime = 0;
 
 int arrowMenu = 0;
 
@@ -566,7 +567,7 @@ void renderLevelCompleted()
     }
 
     double Time_Check;
-    input >> Time_Check;
+    time >> Time_Check;
     time.close();
 
     std::ofstream timeout("Time_Check.txt");
@@ -697,8 +698,8 @@ void changeMap() {
             }
         }
     }
-
-    g_dElapsedTime = 0;
+    
+    
     //for (int i = 0; i < 50; i++) {
     //    for (int j = 0; j < 25; j++) {
     //        if (currentMap[cMap]->getMapVar(i, j) == 'V') {
@@ -811,10 +812,21 @@ void scorePage()
     std::ifstream input("Highest_Score.txt");
     while (getline(input, HighS))
     {
-        c.Y = 13;
+        c.Y = 12;
         c.X = 25;
         g_Console.writeToBuffer(c, HighS, 12);
     }
+    input.close();
+
+    std::string HighT;
+    std::ifstream time("Time_Check.txt");
+    while (getline(time, HighT))
+    {
+        c.Y = 13;
+        c.X = 25;
+        g_Console.writeToBuffer(c, HighT, 13);
+    }
+    time.close();
 
     c.Y = 14;
     c.X = 25;
@@ -1119,6 +1131,7 @@ void moveEnemy() {
 
 void resetGame() {
     cMap = 0;
+    
     changeMap();
 }
 char letter[3] = { 65, 65, 65 };

@@ -1,7 +1,7 @@
 #include "Enemy_Fire.h"
 
 Enemy_Fire::Enemy_Fire(char Direction) {
-	char travelDirection = Direction;
+	travelDirection = Direction;
 }
 
 Enemy_Fire::~Enemy_Fire() {
@@ -21,14 +21,11 @@ void Enemy_Fire::move(map &themap) {
 	fireTrail2Y = fireTrail1Y;
 	fireTrail1X = this->getposX();
 	fireTrail1Y = this->getposY();
-	if (travelDirection == 'V') {
+	if (travelDirection == 72) {
 		if (pOrM == 'P') {
 			if (themap.getMapVar(this->getposX() + 1, this->getposY()) == '#') {
 				pOrM = 'M';
 				this->setposX(this->getposX() - 1);
-			}
-			else if (themap.getMapVar(this->getposX() + 1, this->getposY()) == (char)1) {
-				//end game criteria
 			}
 			else if (themap.getMapVar(this->getposX() + 1, this->getposY()) == ' ') {
 				this->setposX(this->getposX() + 1);

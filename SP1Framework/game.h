@@ -96,6 +96,7 @@ void renderEndscreen();
 void menuInput(); 
 void scorePage();
 void moveEnemy();
+void initializeEnemy();
 
 // keyboard and mouse input event managers
 void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent);  // define this function for the console to call when there are keyboard events

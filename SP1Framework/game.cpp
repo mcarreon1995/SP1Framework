@@ -26,6 +26,7 @@ int NotCollected = 0;
 int score = 0;
 int totalscore = 0;
 bool roundActive = false;
+double saveTime = 0;
 
 int arrowMenu = 0;
 
@@ -558,9 +559,9 @@ void renderLevelCompleted()
     std::ofstream timeout("Time_Check.txt");
     // if the totalscore is higher than the highest_score integer stored inside the text file it will delete the old highest_Score and update the totalscore in.
     // if the totalscore is lower than the highest_Score integer stored, then it will not update the data stored in it.
-    if (g_dElapsedTime < Time_Check)
+    if (saveTime < Time_Check)
     {
-        timeout << g_dElapsedTime;
+        timeout << saveTime;
     }
     else
     {
@@ -683,8 +684,8 @@ void changeMap() {
             }
         }
     }
-
-    g_dElapsedTime = 0;
+    saveTime = g_dElapsedTime;
+    g_dElapsedTime = 0.0;
     //for (int i = 0; i < 50; i++) {
     //    for (int j = 0; j < 25; j++) {
     //        if (currentMap[cMap]->getMapVar(i, j) == 'V') {
@@ -797,12 +798,23 @@ void scorePage()
     std::ifstream input("Highest_Score.txt");
     while (getline(input, HighS))
     {
-        c.Y = 13;
+        c.Y = 12;
         c.X = 25;
         g_Console.writeToBuffer(c, HighS, 12);
     }
+    input.close();
 
-    c.Y = 14;
+    std::string HighT;
+    std::ifstream time("Time_Check.txt");
+    while (getline(time, HighT))
+    {
+        c.Y = 13;
+        c.X = 25;
+        g_Console.writeToBuffer(c, HighT, 13);
+    }
+    time.close();
+
+    c.Y = 13;
     c.X = 25;
     g_Console.writeToBuffer(c, "+-----------------------+", 12);
 

@@ -1189,6 +1189,9 @@ char letter[3] = { 65, 65, 65 };
 int letterNum[3] = { 65, 65, 65 };
 int arrowPos = 0;
 std::string s = "";
+std::string n = "";
+std::string b = "";
+
 bool Save = false;
 
 void renderEndscreen() {
@@ -1199,7 +1202,7 @@ void renderEndscreen() {
     for (int i = 0; i < 3; i++) {
        
         
-        
+        s = letter[arrowPos];
         
         if (i == arrowPos) {
             c.Y += 1;
@@ -1209,21 +1212,23 @@ void renderEndscreen() {
         
         g_Console.writeToBuffer(c, letter[i]);
         
-        c.X += 1; 
+       c.X += 1; 
 
-        for (int i = 0; i < 3; i++)
-        {
-            s += letter[i];
-        }
+      
         
         
     }
+    
+    s = letter[0];
+    n = letter[1];
+    b = letter[2];
     
    
     
     
     
-    
+    s.append(n);
+    s.append(b);
     
     
     /*return s;*/

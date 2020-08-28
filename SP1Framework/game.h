@@ -89,6 +89,7 @@ void renderTransition();   // render the transition screen
 void renderLevelCompleted(); //render Level Completion Screen
 void renderScore();
 void renderMenu();
+void renderEnemy();
 void initializeMaps();
 void resetGame();
 void endInput();

@@ -9,7 +9,7 @@ class Entity
 {
 private:
 	char travelDirection;
-	int moveSpeed;
+	int moveSpeed = 90;
 protected: 
 	Position myPos;
 public:

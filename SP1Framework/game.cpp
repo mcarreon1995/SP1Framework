@@ -10,6 +10,7 @@
 #include "Bat.h"
 #include "BatBullet.h"
 #include "Guard.h"
+#include "Virus.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -278,10 +279,10 @@ void splashScreenWait()    // waits for time to pass in splash screen
 
 void updateGame()       // gameplay logic
 {
+    moveEnemy();
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
-    moveEnemy();
 }
 
 void moveCharacter()
@@ -320,38 +321,31 @@ void moveCharacter()
     }
     int new_x = g_sChar.m_cLocation.X - 15;
     int new_y = g_sChar.m_cLocation.Y;
-    if (checkCollision(new_x, new_y) == 2)
-    {
+    switch (checkCollision(new_x, new_y)) {
+    case 2:
         Beep(440.00, 30);
         Beep(659.25, 30);
         Beep(880.00, 30);
         NotCollected -= 1;
         collected += 1;
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
-
         if (g_dElapsedTime <= 10.9)
         {
             pointsChar += 10;
         }
-
         if (g_dElapsedTime > 10.9 && g_dElapsedTime <= 25.9)
         {
             pointsChar += 5;
         }
-
         if (g_dElapsedTime > 26.0 && g_dElapsedTime < 35.0)
         {
             pointsChar += 3;
         }
-
         else
         {
             pointsChar += 1;
         }
-
-        
-    }
-    if (checkCollision(new_x, new_y) == 3) {
+    case 3:
         if (collected == currentMap[cMap]->getTotalCollectibles()) {
             score += pointsChar;
             totalscore += score;
@@ -362,7 +356,9 @@ void moveCharacter()
             g_sChar.m_cLocation.Y = pos_y;
             Beep(660.00, 30);
         }
-    }
+    case 5:
+        g_eGameState = S_MENU; //change this to death menu later.
+    } 
 }
 void processUserInput()
 {
@@ -434,8 +430,8 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
+    renderEnemy();
     renderScore();
-    
 }
 
 void renderMap()
@@ -494,23 +490,54 @@ void renderMap()
                     else if (currentMap[cMap]->getMapVar(i, j) == 'E') {
                         g_Console.writeToBuffer(c, " ", colors[4]);
                     }
-                    else if (currentMap[cMap]->getMapVar(i, j) == 'F') {
-                        g_Console.writeToBuffer(c, "F", colors[3]);
-                    }
-                    else if (currentMap[cMap]->getMapVar(i, j) == 'f') {
-                        g_Console.writeToBuffer(c, "f", colors[2]);
-                    }
-                    else if (currentMap[cMap]->getMapVar(i, j) == '*') {
-                        g_Console.writeToBuffer(c, "*");
-                    }
-                    else if (currentMap[cMap]->getMapVar(i, j) == 'b') {
-                        g_Console.writeToBuffer(c, "B", colors[6]);
-                    }
-                    else if (currentMap[cMap]->getMapVar(i, j) == 'G') {
-                        g_Console.writeToBuffer(c, "G", colors[6]);
-                    }
+                    
               /*  }
             }*/
+        }
+    }
+}
+
+void renderEnemy() {
+    const WORD colors[] = {
+        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
+        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0, 0
+    };
+    char enemyType = ' ';
+    int enemyColor = 0;
+    COORD c;
+    for (int i = 0; i < 50; i++) {
+        for (int j = 0; j < 25; j++) {
+            c.X = 15 + i;
+            c.Y = j;
+            switch (currentMap[cMap]->getMapVar(i, j)) {
+            case 'F': case 'f': case 'b': case 'G': case '*':
+                switch (currentMap[cMap]->getMapVar(i, j)) {
+                case 'F':
+                    enemyColor = 3;
+                    enemyType = 177;
+                    break;
+                case 'f':
+                    enemyColor = 3;
+                    enemyType = 176;
+                    break;
+                case 'b':
+                    enemyColor = 0;
+                    enemyType = 'B';
+                    break;
+                case '*':
+                    enemyColor = 0;
+                    enemyType = '*';
+                    break;
+                case 'G':
+                    enemyColor = 5;
+                    enemyType = 226;
+                    break;
+                case 'V':
+                    enemyColor = 4;
+                    enemyType = '*';
+                }
+                g_Console.writeToBuffer(c, enemyType, colors[enemyColor]);
+            }
         }
     }
 }
@@ -714,16 +741,21 @@ void renderInputEvents()
 
 int checkCollision(int x, int y) {
     int collideType = 0;
-    if (currentMap[cMap]->getMapVar(x, y) == '#') {
+    switch (currentMap[cMap]->getMapVar(x, y)) {
+    case '#': case 'b':
         collideType = 1;
-    }
-    else if (currentMap[cMap]->getMapVar(x, y) == 'C') {
+        break;
+    case 'C':
         collideType = 2;
-    }
-    else if (currentMap[cMap]->getMapVar(x, y) == 'E') {
+        break;
+    case 'E':
         collideType = 3;
+        break;
+    case 'f': case 'F': case '*': case 'G':
+        collideType = 5;
+        break;
     }
-    else if (x == g_sChar.m_cLocation.X && y == g_sChar.m_cLocation.Y) {
+    if (x == g_sChar.m_cLocation.X && y == g_sChar.m_cLocation.Y) {
         collideType = 4;
     }
     return collideType;
@@ -1070,22 +1102,22 @@ void initializeMaps() {
         {'#','#',' ','#','#','#','#','#','#',' ','#','#',' ','#','#','#','#','#','#',' ',' ',' ',' ',' ','#','P','#',' ','#',' ',' ',' ','#',' ','#','#','#',' ','#','#','#','#','#',' ','#',' ',' ','#',' ',' ',},
         {'#','#',' ','#','P',' ',' ','#','#',' ',' ',' ',' ',' ',' ',' ','#','#','#',' ','#',' ','#',' ','#',' ',' ',' ','#','#','#','#','#',' ','#','#','#',' ','#','#','#','#','#',' ','#',' ','#','#','#',' ',},
         {' ',' ',' ','#','#','#',' ','#','#',' ','#','#','#','#','#',' ',' ',' ',' ',' ','#',' ','#','P','#','#','#',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
-        {' ','#',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#','#',' ','#',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#','#',' ','#','#','#','#','#','#',' ','#',' ',},
-        {' ','#','#','#',' ','#','#','#','#','#','#','#',' ','#','#','#','#','#','#',' ','#',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#','#',' ','#','#','#','P',' ',' ',' ','#',' ',},
+        {' ','#',' ',' ',' ',' ',' ',' ',' ',' ','A','#',' ',' ',' ',' ','#','#','#',' ','#',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#','#',' ','#','#','#','#','#','#',' ','#',' ',},
+        {' ','#','#','#',' ','#','#','#','#','#','#','#',' ','#','#','#','#','#','#',' ','#',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ','#','S','#','#',' ','#','#','#','P',' ',' ',' ','#',' ',},
         {' ','#','#','#','#','#','#','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ','#','#','#','#','#','#',' ','#',' ',},
         {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#','#','#','#',' ','#','#',' ','#','#','#',' ','#','#','#',' ',' ',' ',' ',' ',' ',' ','#','#','#','#',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',},
         {'#','#',' ','#','#','#','#',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#','#',' ','#','#','#','#',' ','#','#','#',' ','#','#','#',' ',' ',' ','#','#',' ','#','#','#','#',' ','#',' ','#',' ',},
         {'#','#',' ',' ','#','#',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ',' ',' ',' ',' ','#','P','#','#',' ','#','#','#',' ','#','#','P',' ','#',' ','#','#',' ','#','#',' ',' ',' ','#',' ','#',' ',},
         {'#','#',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#','#','#',' ','#','#','#',' ','#',' ',' ',' ',' ','#','#','#',' ','#','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#',' ','#',' ',},
         {'#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ','#','#','#','#',' ','#','#','#',' ','#','#','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#','#',' ','#',' ',},
-        {'#','#','#',' ','#','#','#','#','#',' ','#','#','#',' ',' ',' ',' ',' ',' ','#','#','#',' ','#','#','#','#',' ','#',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#',' ','#',' ',},
+        {'#','#','#',' ','#','#','#','#','#',' ','#','#','#',' ',' ',' ',' ',' ',' ','A','#','#',' ','#','#','#','#',' ','#',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#',' ','#',' ',},
         {'#','#','#',' ',' ',' ',' ','#','#',' ','#','#','#','#',' ','#','#',' ','#','#','#','#',' ','#','#','#','#',' ','#',' ','#',' ',' ',' ','#','#','#',' ','#','#',' ','#','#',' ','#','#','#',' ','#',' ',},
         {' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#',' ',' ',' ','#',' ',' ',' ','#',' ','#','#',' ','#','#',' ',' ','P','#',' ','#',' ',},
         {'#',' ','#','#','#','#',' ','#','#','#','#',' ','#','#',' ',' ',' ',' ','#',' ','#','#','#','#','#',' ',' ',' ','#','#','#',' ','#',' ','#',' ','#',' ','#','#',' ','#','#',' ','#','#','#',' ',' ',' ',},
         {'#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#','#','#',' ','#','#',' ','#','P','#','#','#',' ','#','#','#','#','#',' ','#',' ','#',' ','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ','#','#',},
-        {'#',' ','#','#','#','#','#','#',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ',' ',' ','#','#','#',' ',' ',' ',' ',' ',' ',' ','#',' ','#',' ','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#',},
+        {'#',' ','#','#','#','#','#','#',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ',' ',' ','#','#','#',' ',' ',' ',' ',' ',' ','A','#',' ','#',' ','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#',},
         {'#',' ','#','#','#','#','#','#',' ','#','#','#','#',' ','#',' ','#','#','#',' ','#','#','#','#','#',' ','#','#',' ','#','#','#','#',' ','#',' ','#','#','#','#',' ','#','#',' ','#',' ',' ','#','#','#',},
-        {'#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#','#','#',' ','#',' ',' ',' ','#','#',' ','#','#',' ','#','#',' ',' ',' ','#',},
+        {'#','D',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#','#','#',' ','#',' ',' ',' ','#','#',' ','#','#',' ','#','#',' ',' ',' ','#',},
         {'#','#',' ','#','#','#','#',' ','#','#','#','#','#','#','#',' ',' ',' ',' ',' ',' ',' ',' ','#','#','#','#','#',' ','#',' ',' ',' ',' ','#','#','#',' ','#','#',' ','#','#',' ','#','#',' ','#',' ','#',},
         {'#','#',' ','#','P','#',' ',' ',' ','#','#','#','#','#','#','#',' ','#','#',' ','#',' ','#','#','#','#',' ',' ',' ',' ',' ','#','#',' ','#','#','#',' ','#','#',' ','#','#',' ',' ',' ',' ','#','E','#',},
         {'P',' ',' ',' ',' ','#','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','P',' ','#',' ','P','#','#','#','P','#','#','#','#','#','#',' ',' ','#','P',' ',' ',' ',' ','#','#','#','#','#','#','#','#','#',},
@@ -1193,13 +1225,18 @@ void initializeEnemy() {
                         currentMap[i]->updateMap(x, y, 'b');
                         enemyPtr[i][enemyNumber]->setposX(x + change_x);
                         enemyPtr[i][enemyNumber]->setposY(y + change_y);
-                        enemyPtr[i][enemyNumber]->changeSpeed(18);
+                        enemyPtr[i][enemyNumber]->changeSpeed(1);
                         break;
                     case 2:
                         enemyPtr[i][enemyNumber] = new Guard(enemyDir);
                         enemyPtr[i][enemyNumber]->setposX(x);
                         enemyPtr[i][enemyNumber]->setposY(y);
-                        enemyPtr[i][enemyNumber]->changeSpeed(120);
+                        enemyPtr[i][enemyNumber]->changeSpeed(90);
+                    case 4:
+                        enemyPtr[i][enemyNumber] = new Virus(enemyDir);
+                        enemyPtr[i][enemyNumber]->setposX(x);
+                        enemyPtr[i][enemyNumber]->setposY(y);
+                        enemyPtr[i][enemyNumber]->changeSpeed(30);
                     }
                     enemyNumber++;
                 }
@@ -1210,7 +1247,7 @@ void initializeEnemy() {
 int moveTimer = 0;
 void moveEnemy() {
     if (cMap != 3) {
-        int moveSpeed = 0;
+        int moveSpeed = 1;
         int new_x = 0;
         int new_y = 0;
         moveTimer += 1;
@@ -1218,9 +1255,12 @@ void moveEnemy() {
         if (moveTimer == moveSpeed) {
 
             for (int i = 0; i < 5; i++) {
-                new_x = enemyPtr[cMap][i]->getposX();
+                new_x = enemyPtr[cMap][i]->getposX() + 15;
                 new_y = enemyPtr[cMap][i]->getposY();
                 enemyPtr[cMap][i]->move(*currentMap[cMap]);
+                if (checkCollision(new_x, new_y) == 4) {
+                    g_eGameState = S_MENU;
+                }
             }
             moveTimer = 0;
         }

@@ -32,6 +32,7 @@ int collected = 0;
 int NotCollected = 0;
 int score = 0;
 int totalscore = 0;
+int pointsChar = 0;
 bool roundActive = false;
 double saveTime = 0;
 
@@ -326,11 +327,32 @@ void moveCharacter()
         NotCollected -= 1;
         collected += 1;
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
+
+        if (g_dElapsedTime <= 10.9)
+        {
+            pointsChar += 10;
+        }
+
+        if (g_dElapsedTime > 10.9 && g_dElapsedTime <= 25.9)
+        {
+            pointsChar += 5;
+        }
+
+        if (g_dElapsedTime > 26.0 && g_dElapsedTime < 35.0)
+        {
+            pointsChar += 3;
+        }
+
+        else
+        {
+            pointsChar += 1;
+        }
+
         
     }
     if (checkCollision(new_x, new_y) == 3) {
         if (collected == currentMap[cMap]->getTotalCollectibles()) {
-            score = collected * 2;
+            score += pointsChar;
             totalscore += score;
             cMap += 1;
             g_eGameState = S_LVLCOMP;
@@ -696,6 +718,11 @@ int checkCollision(int x, int y) {
 
 void changeMap() {
     collected = 0;
+    pointsChar == 0;
+    g_dElapsedTime == 0;
+    score = 0;
+
+
     NotCollected = currentMap[cMap]->getTotalCollectibles();
     for (int i = 0; i < 50; i++) {
         for (int j = 0; j < 25; j++) {

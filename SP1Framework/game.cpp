@@ -16,7 +16,6 @@
 #include <fstream>
 #include <ctime>
 
-
 int cMap = 0;
 
 Enemy_Fire FIRE('F');
@@ -36,7 +35,6 @@ int totalscore = 0;
 int pointsChar = 0;
 bool roundActive = false;
 double saveTime = 0;
-
 
 int arrowMenu = 0;
 
@@ -142,9 +140,6 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
     case S_MENU: gameplayKBHandler(keyboardEvent);
         break;
     case S_ENDGAME: gameplayKBHandler(keyboardEvent);
-        break;
-    case S_SCORE: gameplayKBHandler(keyboardEvent);
-        break;
     }
 }
 
@@ -402,8 +397,6 @@ void render()
         break;
     case S_ENDGAME: renderEndscreen();
     }
-    
-
     renderFramerate();      // renders debug information, frame rate, elapsed time, etc
     renderInputEvents();    // renders status of input events
     renderToScreen();       // dump the contents of the buffer to the screen, one frame worth of game
@@ -753,8 +746,6 @@ void changeMap() {
 
 void renderMenu()
 {
-    bool playSound = false;
-
     COORD c = g_Console.getConsoleSize();
     std::ostringstream ss;
     const WORD colors[] = {
@@ -836,27 +827,12 @@ void renderMenu()
         g_Console.writeToBuffer(c, ss.str(), 5);
         ss.str("");
     }
-        
-
-    
 }
 
 //Leaderboard Page
 void scorePage()
 {
     COORD c;
-
-    c.Y = 1;
-    c.X = 4;
-    g_Console.writeToBuffer(c, "+++++++++++++++++++++++++++++++++++++", 7);
-
-    c.Y = 2;
-    c.X = 5;
-    g_Console.writeToBuffer(c, "PRESS <ESC> TO GO BACK TO MAIN MENU", 7);
-
-    c.Y = 3;
-    c.X = 4;
-    g_Console.writeToBuffer(c, "+++++++++++++++++++++++++++++++++++++", 7);
 
     c.Y = 8;
     c.X = 28.9;
@@ -865,10 +841,6 @@ void scorePage()
     c.Y = 9;
     c.X = 25;
     g_Console.writeToBuffer(c, "+-----------------------+", 12);
-
-    if (g_skKeyEvent[K_ESCAPE].keyDown) {
-        g_eGameState = S_MENU;
-    }
 
     std::string HighS;
     std::ifstream input("Highest_Score.txt");
@@ -915,28 +887,23 @@ void menuInput() {
     }
     if (g_skKeyEvent[K_DOWN].keyReleased) {
         if (arrowMenu < 2) {
-            Beep(783.99, 30);
             arrowMenu++;
         }
     }
     if (g_skKeyEvent[K_UP].keyReleased) {
         if (arrowMenu > 0) {
-            Beep(783.99, 30);
             arrowMenu--;
         }
     }
     if (g_skKeyEvent[K_SPACE].keyReleased) {
         switch (arrowMenu) {
         case 0:
-            Beep(900.0, 30);
-            g_eGameState = S_GAME1;
+            g_eGameState = S_ENDGAME;
             break;
         case 1:
-            Beep(900.0, 30);
             g_eGameState = S_SCORE;
             break;
         case 2:
-            Beep(900.0, 30);
             g_bQuitGame = true;
         }
     }
@@ -1221,6 +1188,7 @@ void resetGame() {
 char letter[3] = { 65, 65, 65 };
 int letterNum[3] = { 65, 65, 65 };
 int arrowPos = 0;
+std::string s = "";
 
 void renderEndscreen() {
     COORD c;
@@ -1235,10 +1203,14 @@ void renderEndscreen() {
         }
         g_Console.writeToBuffer(c, letter[i]);
         c.X += 1;
+        s = s + letter[i];
     }
+    s = s + letter[i];
+    /*return s;*/
 }
 
 void endInput() {
+    
     if (g_skKeyEvent[K_UP].keyReleased)
     {
         if (letterNum[arrowPos] > 65) {
@@ -1265,5 +1237,31 @@ void endInput() {
             arrowPos += 1;
         }
     }
-}
+    std::ifstream Name("Name_Check.txt");
+    //incase for some odd reason the txt file cant be opened
+    if (!Name.is_open())
+    {
+        std::cout << "Unable to read file\n";
+        return;
+    }
 
+    char Letters;
+    Name >> Letters;
+    Name.close();
+
+    std::ofstream NameOut("Name_Check.txt");
+    // if the totalscore is higher than the highest_score integer stored inside the text file it will delete the old highest_Score and update the totalscore in.
+    // if the totalscore is lower than the highest_Score integer stored, then it will not update the data stored in it.
+    if (g_skKeyEvent[K_SPACE].keyReleased)
+    {
+        NameOut << s;
+    }
+    else
+    {
+        NameOut << Letters;
+    }
+       
+
+    NameOut.close();
+    
+}

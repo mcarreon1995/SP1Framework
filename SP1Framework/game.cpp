@@ -843,9 +843,19 @@ void scorePage()
 {
     COORD c;
 
-    c.Y = 8;
-    c.X = 28.9;
-    g_Console.writeToBuffer(c, "DEFENDING CHAMPION", 4);
+    std::string NAME;
+    std::ifstream Name("Name_Check.txt");
+    while (getline(Name, NAME))
+    {
+        std::ostringstream ss;
+        ss << "Best Hero: " << NAME;
+        c.Y = 8;
+        c.X = 28.9;
+        g_Console.writeToBuffer(c, ss.str(), 4);
+        ss.str("");
+    }
+    Name.close();
+    
 
     c.Y = 9;
     c.X = 25;
@@ -907,7 +917,7 @@ void menuInput() {
     if (g_skKeyEvent[K_SPACE].keyReleased) {
         switch (arrowMenu) {
         case 0:
-            g_eGameState = S_ENDGAME;
+            g_eGameState = S_GAME1;
             break;
         case 1:
             g_eGameState = S_SCORE;
@@ -1227,7 +1237,7 @@ void renderEndscreen() {
     for (int i = 0; i < 3; i++) {
        
         
-        s = letter[arrowPos];
+        
         
         if (i == arrowPos) {
             c.Y += 1;

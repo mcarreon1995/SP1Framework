@@ -719,7 +719,7 @@ int checkCollision(int x, int y) {
 void changeMap() {
     collected = 0;
     pointsChar == 0;
-    g_dElapsedTime == 0;
+    g_dElapsedTime = 0;
     score = 0;
 
 

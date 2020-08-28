@@ -34,6 +34,7 @@ int collected = 0;
 int NotCollected = 0;
 int score = 0;
 int totalscore = 0;
+int totalTime = 0;
 int pointsChar = 0;
 bool roundActive = false;
 double saveTime = 0;
@@ -142,6 +143,9 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
     case S_MENU: gameplayKBHandler(keyboardEvent);
         break;
     case S_ENDGAME: gameplayKBHandler(keyboardEvent);
+        break;
+    case S_SCORE: gameplayKBHandler(keyboardEvent);
+        break;
     }
 }
 
@@ -349,6 +353,7 @@ void moveCharacter()
         if (collected == currentMap[cMap]->getTotalCollectibles()) {
             score += pointsChar;
             totalscore += score;
+            totalTime += g_dElapsedTime;
             cMap += 1;
             g_eGameState = S_LVLCOMP;
         }
@@ -570,7 +575,7 @@ void renderLevelCompleted()
     c.Y = 12;
     ss << "Level " << std::to_string(cMap-1) << " Completed";
     if (cMap == 1) {
-        g_Console.writeToBuffer(c, "Tutorial Level Completed");
+        g_Console.writeToBuffer(c, "Level 1 Completed");
     }
     else {
         g_Console.writeToBuffer(c, ss.str());
@@ -578,6 +583,11 @@ void renderLevelCompleted()
     c.Y += 2;
     ss.str("");
     ss << "Score : " << std::to_string(score);
+    g_Console.writeToBuffer(c, ss.str());
+    ss << std::fixed << std::setprecision(2);
+    ss.str("");
+    c.Y += 2;
+    ss << "Total Time : " << std::to_string(totalTime) << " seconds";
     g_Console.writeToBuffer(c, ss.str());
     c.Y += 2;
     ss.str("");
@@ -641,7 +651,7 @@ void renderLevelCompleted()
     // if the totalscore is lower than the highest_Score integer stored, then it will not update the data stored in it.
     if (g_dElapsedTime < Time_Check)
     {
-        timeout << g_dElapsedTime;
+        timeout << totalTime;
     }
     else
     {
@@ -879,19 +889,35 @@ void scorePage()
 {
     COORD c;
 
+    c.Y = 1;
+    c.X = 4;
+    g_Console.writeToBuffer(c, "+++++++++++++++++++++++++++++++++++++", 7);
+
+    c.Y = 2;
+    c.X = 5;
+    g_Console.writeToBuffer(c, "PRESS <ESC> TO GO BACK TO MAIN MENU", 7);
+
+    c.Y = 3;
+    c.X = 4;
+    g_Console.writeToBuffer(c, "+++++++++++++++++++++++++++++++++++++", 7);
+
+
     std::string NAME;
     std::ifstream Name("Name_Check.txt");
     while (getline(Name, NAME))
     {
         std::ostringstream ss;
-        ss << "Best Hero: " << NAME;
-        c.Y = 8;
-        c.X = 28.9;
-        g_Console.writeToBuffer(c, ss.str(), 4);
+        ss << "CHAMPION: " << NAME;
+        c.Y = 10;
+        c.X = 31;
+        g_Console.writeToBuffer(c, ss.str(), 11);
         ss.str("");
     }
     Name.close();
     
+    c.Y = 7;
+    c.X = 28.9;
+    g_Console.writeToBuffer(c,"DEFENDING CHAMPION", 9);
 
     c.Y = 9;
     c.X = 25;
@@ -904,7 +930,7 @@ void scorePage()
         std::ostringstream ss;
         ss << "Highscore: " << HighS;
         c.Y = 11;
-        c.X = 25;
+        c.X = 31;
         g_Console.writeToBuffer(c, ss.str(), 12);
         ss.str("");
     }
@@ -917,17 +943,21 @@ void scorePage()
         std::ostringstream ss;
         ss << "Best Time : " << HighT;
         c.Y = 12;
-        c.X = 25;
+        c.X = 31;
         g_Console.writeToBuffer(c, ss.str(), 13);
         ss.str("");
     }
     time.close();
 
-    c.Y = 14;
+    c.Y = 13;
     c.X = 25;
     g_Console.writeToBuffer(c, "+-----------------------+", 12);
 
-    
+    //<ESC> go back to menu
+    if (g_skKeyEvent[K_ESCAPE].keyDown) {
+        g_eGameState = S_MENU;
+    }
+
 
 
 }
@@ -942,23 +972,37 @@ void menuInput() {
     }
     if (g_skKeyEvent[K_DOWN].keyReleased) {
         if (arrowMenu < 2) {
+            Beep(2500, 30);
             arrowMenu++;
         }
     }
     if (g_skKeyEvent[K_UP].keyReleased) {
         if (arrowMenu > 0) {
+            Beep(2500, 30);
             arrowMenu--;
         }
     }
     if (g_skKeyEvent[K_SPACE].keyReleased) {
         switch (arrowMenu) {
         case 0:
+            Beep(1000, 30);
+            Beep(1200, 30);
+            Beep(1500, 30);
             g_eGameState = S_GAME1;
             break;
         case 1:
+            Beep(1500, 30);
+            Beep(1000, 30);
             g_eGameState = S_SCORE;
             break;
         case 2:
+            Beep(1500, 30);
+            Beep(1400, 30);
+            Beep(1300, 30);
+            Beep(1200, 30);
+            Beep(1100, 30);
+            Beep(1000, 30);
+            Beep(500, 30);
             g_bQuitGame = true;
         }
     }
@@ -968,14 +1012,25 @@ void menuInput() {
     case 0:
         if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 14))
         {
+            Beep(1000, 30);
+            Beep(1200, 30);
+            Beep(1500, 30);
             g_eGameState = S_GAME1;
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 16))
         {
+            Beep(1500, 30);
+            Beep(1400, 30);
+            Beep(1300, 30);
+            Beep(1200, 30);
+            Beep(1100, 30);
+            Beep(1000, 30);
+            Beep(500, 30);
             g_bQuitGame = true;
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 15))
         {
+            Beep(1500, 30);
             g_eGameState = S_SCORE;
         }
     }
@@ -1271,6 +1326,7 @@ void resetGame() {
     cMap = 0;
     changeMap();
 }
+
 char letter[3] = { 65, 65, 65 };
 int letterNum[3] = { 65, 65, 65 };
 int arrowPos = 0;
@@ -1305,14 +1361,12 @@ void renderEndscreen() {
         
     }
     
+    //Each CHAR
     s = letter[0];
     n = letter[1];
     b = letter[2];
     
-   
-    
-    
-    
+    //Appending each CHAR
     s.append(n);
     s.append(b);
     
@@ -1375,4 +1429,30 @@ void endInput() {
 
     NameOut.close();
     
+}
+
+void endGame()
+{
+    COORD c;
+    std::ostringstream ss;
+
+    c.X = 25;
+    c.Y = 6;
+    g_Console.writeToBuffer(c, "YOU HAVE DEFEATED THE MAP!!", 15);
+
+    
+    ss << "Your Score: " << totalscore;
+    c.Y = 9;
+    c.X = 25;
+    g_Console.writeToBuffer(c, ss.str(), 12);
+    ss.str("");
+
+    ss << std::fixed << std::setprecision(2);
+    ss.str("");
+    ss << "Time Completed: " << totalTime << " seconds";  
+    c.Y = 10;
+    c.X = 25;
+    g_Console.writeToBuffer(c, ss.str(), 12);
+    ss.str("");
+
 }

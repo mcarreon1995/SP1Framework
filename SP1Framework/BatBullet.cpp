@@ -1,7 +1,9 @@
 #include "BatBullet.h"
 char travelDirection;
-BatBullet::BatBullet(char direction) {
-	char travelDirection = direction;
+BatBullet::BatBullet(char direction, int x, int y) {
+	setDirection(direction);
+	origin_x = x;
+	origin_y = y;
 }
 
 BatBullet::~BatBullet() {
@@ -9,16 +11,16 @@ BatBullet::~BatBullet() {
 }
 
 char BatBullet::getName() {
-	return '* ';
+	return '*';
 }
 
 void BatBullet::move(map& themap) {
 	bool skip = 0;
 	oldX = this->getposX();
 	oldY = this->getposY();
-	if (travelDirection == 'W') {
+	if (getDirection() == 'A') {
 		if (themap.getMapVar(this->getposX() - 1, this->getposY()) == '#') {
-			delete this;
+			this->setposX(origin_x);
 			skip = 1;
 		}
 		else if (themap.getMapVar(this->getposX() - 1, this->getposY()) == (char)1) {
@@ -31,9 +33,9 @@ void BatBullet::move(map& themap) {
 			cout << "Bugged!!" << endl;
 		}
 	}
-	else if (travelDirection == 'S') {
+	else if (getDirection() == 'D') {
 		if (themap.getMapVar(this->getposX() + 1, this->getposY()) == '#') {
-			delete this;
+			this->setposX(origin_x);
 			skip = 1;
 		}
 		else if (themap.getMapVar(this->getposX() + 1, this->getposY()) == (char)1) {
@@ -46,9 +48,9 @@ void BatBullet::move(map& themap) {
 			cout << "Bugged!!" << endl;
 		}
 	}
-	else if (travelDirection == 'A') {
+	else if (getDirection() == 'W') {
 		if (themap.getMapVar(this->getposX(), this->getposY()-1) == '#') {
-			delete this;
+			this->setposY(origin_y);
 			skip = 1;
 		}
 		else if (themap.getMapVar(this->getposX(), this->getposY()-1) == (char)1) {
@@ -61,9 +63,9 @@ void BatBullet::move(map& themap) {
 			cout << "Bugged!!" << endl;
 		}
 	}
-	else if (travelDirection == 'D') {
+	else if (getDirection() == 'S') {
 		if (themap.getMapVar(this->getposX(), this->getposY() + 1) == '#') {
-			delete this;
+			this->setposY(origin_y);
 			skip = 1;
 		}
 		else if (themap.getMapVar(this->getposX(), this->getposY() + 1) == (char)1) {

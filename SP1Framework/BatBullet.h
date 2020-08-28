@@ -5,9 +5,9 @@ class BatBullet :
 {
 private:
 	int oldX, oldY;
-	char travelDirection;
+	int origin_x, origin_y;
 public:
-	BatBullet(char);
+	BatBullet(char direction, int x, int y);
 	~BatBullet();
 	char getName();
 	void move(map&);

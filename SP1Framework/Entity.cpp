@@ -28,4 +28,18 @@ void Entity::setposY(int Y) {
 	myPos.setYpos(Y);
 }
 
+char Entity::getDirection() {
+	return travelDirection;
+}
 
+void Entity::setDirection(char t) {
+	travelDirection = t;
+}
+
+void Entity::changeSpeed(int s) {
+	moveSpeed = s;
+}
+
+int Entity::getSpeed() {
+	return moveSpeed;
+}

@@ -33,6 +33,7 @@ int collected = 0;
 int NotCollected = 0;
 int score = 0;
 int totalscore = 0;
+int totalTime = 0;
 int pointsChar = 0;
 bool roundActive = false;
 double saveTime = 0;
@@ -358,6 +359,7 @@ void moveCharacter()
         if (collected == currentMap[cMap]->getTotalCollectibles()) {
             score += pointsChar;
             totalscore += score;
+            totalTime += g_dElapsedTime;
             cMap += 1;
             g_eGameState = S_LVLCOMP;
         }
@@ -546,7 +548,7 @@ void renderLevelCompleted()
     c.Y = 12;
     ss << "Level " << std::to_string(cMap-1) << " Completed";
     if (cMap == 1) {
-        g_Console.writeToBuffer(c, "Tutorial Level Completed");
+        g_Console.writeToBuffer(c, "Level 1 Completed");
     }
     else {
         g_Console.writeToBuffer(c, ss.str());
@@ -554,6 +556,11 @@ void renderLevelCompleted()
     c.Y += 2;
     ss.str("");
     ss << "Score : " << std::to_string(score);
+    g_Console.writeToBuffer(c, ss.str());
+    ss << std::fixed << std::setprecision(2);
+    ss.str("");
+    c.Y += 2;
+    ss << "Total Time : " << std::to_string(totalTime) << " seconds";
     g_Console.writeToBuffer(c, ss.str());
     c.Y += 2;
     ss.str("");
@@ -617,7 +624,7 @@ void renderLevelCompleted()
     // if the totalscore is lower than the highest_Score integer stored, then it will not update the data stored in it.
     if (g_dElapsedTime < Time_Check)
     {
-        timeout << g_dElapsedTime;
+        timeout << totalTime;
     }
     else
     {
@@ -1279,6 +1286,7 @@ void resetGame() {
     cMap = 0;
     changeMap();
 }
+
 char letter[3] = { 65, 65, 65 };
 int letterNum[3] = { 65, 65, 65 };
 int arrowPos = 0;
@@ -1381,4 +1389,30 @@ void endInput() {
 
     NameOut.close();
     
+}
+
+void endGame()
+{
+    COORD c;
+    std::ostringstream ss;
+
+    c.X = 25;
+    c.Y = 6;
+    g_Console.writeToBuffer(c, "YOU HAVE DEFEATED THE MAP!!", 15);
+
+    
+    ss << "Your Score: " << totalscore;
+    c.Y = 9;
+    c.X = 25;
+    g_Console.writeToBuffer(c, ss.str(), 12);
+    ss.str("");
+
+    ss << std::fixed << std::setprecision(2);
+    ss.str("");
+    ss << "Time Completed: " << totalTime << " seconds";  
+    c.Y = 10;
+    c.X = 25;
+    g_Console.writeToBuffer(c, ss.str(), 12);
+    ss.str("");
+
 }

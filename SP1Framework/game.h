@@ -54,7 +54,8 @@ enum EGAMESTATES
     S_LVLCOMP,
     S_TRANS,
     S_SCORE,
-    S_ENDGAME
+    S_ENDGAME,
+    S_ENDGAME2
 };
 
 // struct for the game character
@@ -97,6 +98,7 @@ void menuInput();
 void scorePage();
 void moveEnemy();
 void initializeEnemy();
+void endGame();
 
 // keyboard and mouse input event managers
 void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent);  // define this function for the console to call when there are keyboard events

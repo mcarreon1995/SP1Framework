@@ -32,6 +32,7 @@ int collected = 0;
 int NotCollected = 0;
 int score = 0;
 int totalscore = 0;
+int pointsChar = 0;
 bool roundActive = false;
 double saveTime = 0;
 
@@ -326,11 +327,32 @@ void moveCharacter()
         NotCollected -= 1;
         collected += 1;
         currentMap[cMap]->updateMap(new_x, new_y, ' ');
+
+        if (g_dElapsedTime <= 10.9)
+        {
+            pointsChar += 10;
+        }
+
+        if (g_dElapsedTime > 10.9 && g_dElapsedTime <= 25.9)
+        {
+            pointsChar += 5;
+        }
+
+        if (g_dElapsedTime > 26.0 && g_dElapsedTime < 35.0)
+        {
+            pointsChar += 3;
+        }
+
+        else
+        {
+            pointsChar += 1;
+        }
+
         
     }
     if (checkCollision(new_x, new_y) == 3) {
         if (collected == currentMap[cMap]->getTotalCollectibles()) {
-            score = collected * 2;
+            score += pointsChar;
             totalscore += score;
             cMap += 1;
             g_eGameState = S_LVLCOMP;
@@ -705,6 +727,11 @@ int checkCollision(int x, int y) {
 
 void changeMap() {
     collected = 0;
+    pointsChar == 0;
+    g_dElapsedTime = 0;
+    score = 0;
+
+
     NotCollected = currentMap[cMap]->getTotalCollectibles();
     for (int i = 0; i < 50; i++) {
         for (int j = 0; j < 25; j++) {
@@ -880,7 +907,7 @@ void menuInput() {
     if (g_skKeyEvent[K_SPACE].keyReleased) {
         switch (arrowMenu) {
         case 0:
-            g_eGameState = S_GAME1;
+            g_eGameState = S_ENDGAME;
             break;
         case 1:
             g_eGameState = S_SCORE;
@@ -1186,6 +1213,8 @@ void resetGame() {
 char letter[3] = { 65, 65, 65 };
 int letterNum[3] = { 65, 65, 65 };
 int arrowPos = 0;
+std::string s = "";
+bool Save = false;
 
 void renderEndscreen() {
     COORD c;
@@ -1193,17 +1222,40 @@ void renderEndscreen() {
     c.Y = 12;
 
     for (int i = 0; i < 3; i++) {
+       
+        
+        
+        
         if (i == arrowPos) {
             c.Y += 1;
             g_Console.writeToBuffer(c, '^');
             c.Y -= 1;
         }
+        
         g_Console.writeToBuffer(c, letter[i]);
-        c.X += 1;
+        
+        c.X += 1; 
+
+        for (int i = 0; i < 3; i++)
+        {
+            s += letter[i];
+        }
+        
+        
     }
+    
+   
+    
+    
+    
+    
+    
+    
+    /*return s;*/
 }
 
 void endInput() {
+    
     if (g_skKeyEvent[K_UP].keyReleased)
     {
         if (letterNum[arrowPos] > 65) {
@@ -1230,4 +1282,31 @@ void endInput() {
             arrowPos += 1;
         }
     }
+    std::ifstream Name("Name_Check.txt");
+    //incase for some odd reason the txt file cant be opened
+    if (!Name.is_open())
+    {
+        std::cout << "Unable to read file\n";
+        return;
+    }
+
+    string Letters;
+    Name >> Letters;
+    Name.close();
+
+    std::ofstream NameOut("Name_Check.txt");
+    // if the totalscore is higher than the highest_score integer stored inside the text file it will delete the old highest_Score and update the totalscore in.
+    // if the totalscore is lower than the highest_Score integer stored, then it will not update the data stored in it.
+    if (g_skKeyEvent[K_SPACE].keyReleased)
+    {
+        NameOut << s;
+    }
+    else
+    {
+        NameOut << Letters;
+    }
+       
+
+    NameOut.close();
+    
 }

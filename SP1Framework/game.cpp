@@ -140,6 +140,9 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
     case S_MENU: gameplayKBHandler(keyboardEvent);
         break;
     case S_ENDGAME: gameplayKBHandler(keyboardEvent);
+        break;
+    case S_SCORE: gameplayKBHandler(keyboardEvent);
+        break;
     }
 }
 
@@ -843,19 +846,35 @@ void scorePage()
 {
     COORD c;
 
+    c.Y = 1;
+    c.X = 4;
+    g_Console.writeToBuffer(c, "+++++++++++++++++++++++++++++++++++++", 7);
+
+    c.Y = 2;
+    c.X = 5;
+    g_Console.writeToBuffer(c, "PRESS <ESC> TO GO BACK TO MAIN MENU", 7);
+
+    c.Y = 3;
+    c.X = 4;
+    g_Console.writeToBuffer(c, "+++++++++++++++++++++++++++++++++++++", 7);
+
+
     std::string NAME;
     std::ifstream Name("Name_Check.txt");
     while (getline(Name, NAME))
     {
         std::ostringstream ss;
-        ss << "Best Hero: " << NAME;
-        c.Y = 8;
-        c.X = 28.9;
-        g_Console.writeToBuffer(c, ss.str(), 4);
+        ss << "CHAMPION: " << NAME;
+        c.Y = 10;
+        c.X = 31;
+        g_Console.writeToBuffer(c, ss.str(), 11);
         ss.str("");
     }
     Name.close();
     
+    c.Y = 7;
+    c.X = 28.9;
+    g_Console.writeToBuffer(c,"DEFENDING CHAMPION", 9);
 
     c.Y = 9;
     c.X = 25;
@@ -868,7 +887,7 @@ void scorePage()
         std::ostringstream ss;
         ss << "Highscore: " << HighS;
         c.Y = 11;
-        c.X = 25;
+        c.X = 31;
         g_Console.writeToBuffer(c, ss.str(), 12);
         ss.str("");
     }
@@ -881,17 +900,21 @@ void scorePage()
         std::ostringstream ss;
         ss << "Best Time : " << HighT;
         c.Y = 12;
-        c.X = 25;
+        c.X = 31;
         g_Console.writeToBuffer(c, ss.str(), 13);
         ss.str("");
     }
     time.close();
 
-    c.Y = 14;
+    c.Y = 13;
     c.X = 25;
     g_Console.writeToBuffer(c, "+-----------------------+", 12);
 
-    
+    //<ESC> go back to menu
+    if (g_skKeyEvent[K_ESCAPE].keyDown) {
+        g_eGameState = S_MENU;
+    }
+
 
 
 }
@@ -906,23 +929,37 @@ void menuInput() {
     }
     if (g_skKeyEvent[K_DOWN].keyReleased) {
         if (arrowMenu < 2) {
+            Beep(2500, 30);
             arrowMenu++;
         }
     }
     if (g_skKeyEvent[K_UP].keyReleased) {
         if (arrowMenu > 0) {
+            Beep(2500, 30);
             arrowMenu--;
         }
     }
     if (g_skKeyEvent[K_SPACE].keyReleased) {
         switch (arrowMenu) {
         case 0:
+            Beep(1000, 30);
+            Beep(1200, 30);
+            Beep(1500, 30);
             g_eGameState = S_GAME1;
             break;
         case 1:
+            Beep(1500, 30);
+            Beep(1000, 30);
             g_eGameState = S_SCORE;
             break;
         case 2:
+            Beep(1500, 30);
+            Beep(1400, 30);
+            Beep(1300, 30);
+            Beep(1200, 30);
+            Beep(1100, 30);
+            Beep(1000, 30);
+            Beep(500, 30);
             g_bQuitGame = true;
         }
     }
@@ -932,14 +969,25 @@ void menuInput() {
     case 0:
         if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 38) && (g_mouseEvent.mousePosition.Y == 14))
         {
+            Beep(1000, 30);
+            Beep(1200, 30);
+            Beep(1500, 30);
             g_eGameState = S_GAME1;
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 16))
         {
+            Beep(1500, 30);
+            Beep(1400, 30);
+            Beep(1300, 30);
+            Beep(1200, 30);
+            Beep(1100, 30);
+            Beep(1000, 30);
+            Beep(500, 30);
             g_bQuitGame = true;
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 15))
         {
+            Beep(1500, 30);
             g_eGameState = S_SCORE;
         }
     }
@@ -1254,14 +1302,12 @@ void renderEndscreen() {
         
     }
     
+    //Each CHAR
     s = letter[0];
     n = letter[1];
     b = letter[2];
     
-   
-    
-    
-    
+    //Appending each CHAR
     s.append(n);
     s.append(b);
     

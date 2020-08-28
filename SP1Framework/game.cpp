@@ -532,8 +532,8 @@ void renderEnemy() {
                     enemyType = '*';
                     break;
                 case 'G':
-                    enemyColor = 5;
-                    enemyType = 226;
+                    enemyColor = 7;
+                    enemyType = '?';
                     break;
                 case 'V':
                     enemyColor = 4;
@@ -1298,23 +1298,23 @@ void initializeEnemy() {
     }
 }
 int moveTimer = 0;
-
+int moveSpeed = 0;
 void moveEnemy() {
-    if (cMap != 3) {
-        /*if (cMap == 0 || cMap == 2) {
-            moveSpeed = 90;
-        }
-        if (cMap == 1) {
-            moveSpeed = 18;
-        }
-        if (cMap == 4) {
-            moveSpeed = 30;
-        }*/
-        int moveSpeed = enemyPtr[cMap][0]->getSpeed();
+    //if (cMap != 3) {
+    //    /*if (cMap == 0 || cMap == 2) {
+    //        moveSpeed = 90;
+    //    }
+    //    if (cMap == 1) {
+    //        moveSpeed = 18;
+    //    }
+    //    if (cMap == 4) {
+    //        moveSpeed = 30;
+    //    }*/
+        moveSpeed = enemyPtr[cMap][0]->getSpeed();
         int new_x = 0;
         int new_y = 0;
         moveTimer += 1;
-        if (moveTimer == moveSpeed) {
+        if (moveTimer >= moveSpeed) {
             for (int i = 0; i < 5; i++) {
                 new_x = enemyPtr[cMap][i]->getposX() + 15;
                 new_y = enemyPtr[cMap][i]->getposY();
@@ -1326,7 +1326,7 @@ void moveEnemy() {
             moveTimer = 0;
         }
     }
-}
+//}
 
 char letter[3] = { 65, 65, 65 };
 int letterNum[3] = { 65, 65, 65 };

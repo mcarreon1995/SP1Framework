@@ -20,7 +20,6 @@
 
 int cMap = 0;
 
-Enemy_Fire FIRE('F');
 map* currentMap[6] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 Entity* enemyPtr[6][5];
 
@@ -64,11 +63,7 @@ void init( void )
 
     // Set precision for floating point output
     g_dElapsedTime = 0.0;    
-    initializeMaps();
-    initializeEnemy();
-    changeMap();
-    FIRE.setposX(4);
-    FIRE.setposY(2);
+    prepGame();
 
     g_sChar.m_cLocation.X = 15 + 1;
     g_sChar.m_cLocation.Y = 23;
@@ -322,6 +317,8 @@ void moveCharacter()
     if (g_skKeyEvent[K_SPACE].keyDown)
     {
         cMap += 1;
+        changeMap();
+
     }
     int new_x = g_sChar.m_cLocation.X - 15;
     int new_y = g_sChar.m_cLocation.Y;
@@ -349,6 +346,7 @@ void moveCharacter()
         {
             pointsChar += 1;
         }
+        break;
     case 3:
         if (collected == currentMap[cMap]->getTotalCollectibles()) {
             score += pointsChar;
@@ -361,8 +359,9 @@ void moveCharacter()
             g_sChar.m_cLocation.Y = pos_y;
             Beep(660.00, 30);
         }
+        break;
     case 5:
-        g_eGameState = S_MENU; //change this to death menu later.
+        resetGame(); //change this to death menu later.
     } 
 }
 void processUserInput()
@@ -370,7 +369,6 @@ void processUserInput()
     // quits the game if player hits the escape key
     if (g_skKeyEvent[K_ESCAPE].keyDown) {
         resetGame();
-        g_eGameState = S_MENU;
     } 
 }
 
@@ -776,8 +774,6 @@ void changeMap() {
     pointsChar == 0;
     g_dElapsedTime = 0;
     score = 0;
-
-
     NotCollected = currentMap[cMap]->getTotalCollectibles();
     for (int i = 0; i < 50; i++) {
         for (int j = 0; j < 25; j++) {
@@ -955,6 +951,7 @@ void scorePage()
 
     //<ESC> go back to menu
     if (g_skKeyEvent[K_ESCAPE].keyDown) {
+
         g_eGameState = S_MENU;
     }
 
@@ -1015,6 +1012,7 @@ void menuInput() {
             Beep(1000, 30);
             Beep(1200, 30);
             Beep(1500, 30);
+            prepGame();
             g_eGameState = S_GAME1;
         }
         else if ((g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED) && (g_mouseEvent.mousePosition.X >= 31) && (g_mouseEvent.mousePosition.X <= 37) && (g_mouseEvent.mousePosition.Y == 16))
@@ -1280,7 +1278,7 @@ void initializeEnemy() {
                         currentMap[i]->updateMap(x, y, 'b');
                         enemyPtr[i][enemyNumber]->setposX(x + change_x);
                         enemyPtr[i][enemyNumber]->setposY(y + change_y);
-                        enemyPtr[i][enemyNumber]->changeSpeed(1);
+                        enemyPtr[i][enemyNumber]->changeSpeed(18);
                         break;
                     case 2:
                         enemyPtr[i][enemyNumber] = new Guard(enemyDir);
@@ -1300,15 +1298,23 @@ void initializeEnemy() {
     }
 }
 int moveTimer = 0;
+
 void moveEnemy() {
     if (cMap != 3) {
-        int moveSpeed = 1;
+        /*if (cMap == 0 || cMap == 2) {
+            moveSpeed = 90;
+        }
+        if (cMap == 1) {
+            moveSpeed = 18;
+        }
+        if (cMap == 4) {
+            moveSpeed = 30;
+        }*/
+        int moveSpeed = enemyPtr[cMap][0]->getSpeed();
         int new_x = 0;
         int new_y = 0;
         moveTimer += 1;
-        moveSpeed = enemyPtr[cMap][0]->getSpeed();
         if (moveTimer == moveSpeed) {
-
             for (int i = 0; i < 5; i++) {
                 new_x = enemyPtr[cMap][i]->getposX() + 15;
                 new_y = enemyPtr[cMap][i]->getposY();
@@ -1320,11 +1326,6 @@ void moveEnemy() {
             moveTimer = 0;
         }
     }
-}
-
-void resetGame() {
-    cMap = 0;
-    changeMap();
 }
 
 char letter[3] = { 65, 65, 65 };
@@ -1374,6 +1375,19 @@ void renderEndscreen() {
     /*return s;*/
 }
 
+void prepGame() {
+    cMap = 0;
+    initializeMaps();
+    initializeEnemy();
+    changeMap();
+}
+void resetGame() {
+
+    cMap = 0;
+    changeMap();
+    moveTimer = 0;
+    g_eGameState = S_MENU;
+}
 void endInput() {
     
     if (g_skKeyEvent[K_UP].keyReleased)

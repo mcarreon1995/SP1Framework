@@ -871,7 +871,7 @@ void menuInput() {
     if (g_skKeyEvent[K_SPACE].keyReleased) {
         switch (arrowMenu) {
         case 0:
-            g_eGameState = S_GAME1;
+            g_eGameState = S_ENDGAME;
             break;
         case 1:
             g_eGameState = S_SCORE;
@@ -1161,6 +1161,7 @@ void resetGame() {
 char letter[3] = { 65, 65, 65 };
 int letterNum[3] = { 65, 65, 65 };
 int arrowPos = 0;
+std::string s = "";
 
 void renderEndscreen() {
     COORD c;
@@ -1175,10 +1176,14 @@ void renderEndscreen() {
         }
         g_Console.writeToBuffer(c, letter[i]);
         c.X += 1;
+        s = s + letter[i];
     }
+    s = s + letter[i];
+    /*return s;*/
 }
 
 void endInput() {
+    
     if (g_skKeyEvent[K_UP].keyReleased)
     {
         if (letterNum[arrowPos] > 65) {
@@ -1205,4 +1210,31 @@ void endInput() {
             arrowPos += 1;
         }
     }
+    std::ifstream Name("Name_Check.txt");
+    //incase for some odd reason the txt file cant be opened
+    if (!Name.is_open())
+    {
+        std::cout << "Unable to read file\n";
+        return;
+    }
+
+    char Letters;
+    Name >> Letters;
+    Name.close();
+
+    std::ofstream NameOut("Name_Check.txt");
+    // if the totalscore is higher than the highest_score integer stored inside the text file it will delete the old highest_Score and update the totalscore in.
+    // if the totalscore is lower than the highest_Score integer stored, then it will not update the data stored in it.
+    if (g_skKeyEvent[K_SPACE].keyReleased)
+    {
+        NameOut << s;
+    }
+    else
+    {
+        NameOut << Letters;
+    }
+       
+
+    NameOut.close();
+    
 }

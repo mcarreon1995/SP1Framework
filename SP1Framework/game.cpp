@@ -807,11 +807,11 @@ void scorePage()
 {
     COORD c;
 
-    c.Y = 9;
+    c.Y = 8;
     c.X = 28.9;
     g_Console.writeToBuffer(c, "DEFENDING CHAMPION", 4);
 
-    c.Y = 10;
+    c.Y = 9;
     c.X = 25;
     g_Console.writeToBuffer(c, "+-----------------------+", 12);
 
@@ -819,9 +819,12 @@ void scorePage()
     std::ifstream input("Highest_Score.txt");
     while (getline(input, HighS))
     {
-        c.Y = 12;
+        std::ostringstream ss;
+        ss << "Highscore: " << HighS;
+        c.Y = 11;
         c.X = 25;
-        g_Console.writeToBuffer(c, HighS, 12);
+        g_Console.writeToBuffer(c, ss.str(), 12);
+        ss.str("");
     }
     input.close();
 
@@ -829,9 +832,12 @@ void scorePage()
     std::ifstream time("Time_Check.txt");
     while (getline(time, HighT))
     {
-        c.Y = 13;
+        std::ostringstream ss;
+        ss << "Best Time : " << HighT;
+        c.Y = 12;
         c.X = 25;
-        g_Console.writeToBuffer(c, HighT, 13);
+        g_Console.writeToBuffer(c, ss.str(), 13);
+        ss.str("");
     }
     time.close();
 

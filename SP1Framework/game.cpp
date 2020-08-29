@@ -905,6 +905,7 @@ void scorePage()
     while (getline(Name, NAME))
     {
         std::ostringstream ss;
+        
         ss << "CHAMPION: " << NAME;
         c.Y = 10;
         c.X = 31;
@@ -950,6 +951,16 @@ void scorePage()
     c.Y = 13;
     c.X = 25;
     g_Console.writeToBuffer(c, "+-----------------------+", 12);
+
+    if (NAME == "BPT")
+    {
+        std::ostringstream ss;
+        ss << "https://www.youtube.com/watch?v=xUxPcxK6tvI";
+        c.Y = 15;
+        c.X = 25;
+        g_Console.writeToBuffer(c, ss.str(), 12);
+        ss.str("");
+    }
 
     //<ESC> go back to menu
     if (g_skKeyEvent[K_ESCAPE].keyDown) {

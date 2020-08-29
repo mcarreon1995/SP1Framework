@@ -532,12 +532,13 @@ void renderEnemy() {
                     enemyType = '*';
                     break;
                 case 'G':
-                    enemyColor = 7;
-                    enemyType = '?';
+                    enemyColor = 9;
+                    enemyType = 'O';
                     break;
                 case 'V':
-                    enemyColor = 4;
+                    enemyColor = 0;
                     enemyType = '*';
+                    break;
                 }
                 g_Console.writeToBuffer(c, enemyType, colors[enemyColor]);
             }
@@ -595,6 +596,7 @@ void renderLevelCompleted()
     g_Console.writeToBuffer(c, "Press <SPACE> to Continue");
     if (g_skKeyEvent[K_SPACE].keyDown) {
         g_eGameState = S_GAME1;
+        prepGame();
         changeMap();
     }
 
@@ -1285,11 +1287,13 @@ void initializeEnemy() {
                         enemyPtr[i][enemyNumber]->setposX(x);
                         enemyPtr[i][enemyNumber]->setposY(y);
                         enemyPtr[i][enemyNumber]->changeSpeed(90);
+                        break;
                     case 4:
                         enemyPtr[i][enemyNumber] = new Virus(enemyDir);
                         enemyPtr[i][enemyNumber]->setposX(x);
                         enemyPtr[i][enemyNumber]->setposY(y);
                         enemyPtr[i][enemyNumber]->changeSpeed(30);
+                        break;
                     }
                     enemyNumber++;
                 }
@@ -1300,16 +1304,7 @@ void initializeEnemy() {
 int moveTimer = 0;
 int moveSpeed = 0;
 void moveEnemy() {
-    //if (cMap != 3) {
-    //    /*if (cMap == 0 || cMap == 2) {
-    //        moveSpeed = 90;
-    //    }
-    //    if (cMap == 1) {
-    //        moveSpeed = 18;
-    //    }
-    //    if (cMap == 4) {
-    //        moveSpeed = 30;
-    //    }*/
+    if (cMap != 3) {
         moveSpeed = enemyPtr[cMap][0]->getSpeed();
         int new_x = 0;
         int new_y = 0;
@@ -1326,7 +1321,7 @@ void moveEnemy() {
             moveTimer = 0;
         }
     }
-//}
+}
 
 char letter[3] = { 65, 65, 65 };
 int letterNum[3] = { 65, 65, 65 };

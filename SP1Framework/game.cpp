@@ -396,6 +396,11 @@ void render()
     case S_SCORE: scorePage();
         break;
     case S_ENDGAME: renderEndscreen();
+        break;
+    case S_ENDGAME2: endGame();
+        break;
+    case S_GAMEOVER: gameOver();
+        break;
     }
     renderFramerate();      // renders debug information, frame rate, elapsed time, etc
     renderInputEvents();    // renders status of input events
@@ -1345,41 +1350,61 @@ bool Save = false;
 
 void renderEndscreen() {
     COORD c;
-    c.X = 40;
+    std::ostringstream ss;
+
+    c.X = 18;
+    c.Y = 7;
+    g_Console.writeToBuffer(c, "========= CONGRATULATIONS!!!! =========", 15);
+
+    c.X = 21;
+    c.Y = 9;
+    g_Console.writeToBuffer(c, "YOU MANAGED TO BEAT THE HIGH SCORE", 15);
+
+    ss << "Your Score: " << totalscore;
+    c.Y = 11;
+    c.X = 25;
+    g_Console.writeToBuffer(c, ss.str(), 12);
+    ss.str("");
+
+    ss << std::fixed << std::setprecision(2);
+    ss.str("");
+    ss << "Time Completed: " << totalTime << " seconds";
     c.Y = 12;
+    c.X = 25;
+    g_Console.writeToBuffer(c, ss.str(), 12);
+    ss.str("");
+
+
+    c.X = 35;
+    c.Y = 15;
 
     for (int i = 0; i < 3; i++) {
-       
-        
-        
-        
+
         if (i == arrowPos) {
             c.Y += 1;
             g_Console.writeToBuffer(c, '^');
             c.Y -= 1;
         }
-        
-        g_Console.writeToBuffer(c, letter[i]);
-        
-       c.X += 1; 
 
-      
-        
-        
+        g_Console.writeToBuffer(c, letter[i]);
+
+        c.X += 1;
+
     }
-    
+
     //Each CHAR
     s = letter[0];
     n = letter[1];
     b = letter[2];
-    
+
     //Appending each CHAR
     s.append(n);
     s.append(b);
-    
-    
+
+
     /*return s;*/
 }
+
 
 void prepGame() {
     cMap = 0;
@@ -1464,7 +1489,7 @@ void endGame()
     c.Y = 6;
     g_Console.writeToBuffer(c, "YOU HAVE DEFEATED THE MAP!!", 15);
 
-    
+
     ss << "Your Score: " << totalscore;
     c.Y = 9;
     c.X = 25;
@@ -1473,10 +1498,42 @@ void endGame()
 
     ss << std::fixed << std::setprecision(2);
     ss.str("");
-    ss << "Time Completed: " << totalTime << " seconds";  
+    ss << "Time Completed: " << totalTime << " seconds";
     c.Y = 10;
     c.X = 25;
     g_Console.writeToBuffer(c, ss.str(), 12);
     ss.str("");
 
+}
+
+void gameOver()
+{
+    COORD c;
+    std::ostringstream ss;
+
+    c.X = 28;
+    c.Y = 7;
+    g_Console.writeToBuffer(c, "====== GAME OVER ========", 15);
+
+    ss << "Your Score: " << totalscore;
+    c.Y = 9;
+    c.X = 28;
+    g_Console.writeToBuffer(c, ss.str(), 12);
+    ss.str("");
+
+    ss << std::fixed << std::setprecision(2);
+    ss.str("");
+    ss << "Time Completed: " << totalTime << " seconds";
+    c.Y = 10;
+    c.X = 28;
+    g_Console.writeToBuffer(c, ss.str(), 12);
+    ss.str("");
+
+    c.X = 28;
+    c.Y = 12;
+    g_Console.writeToBuffer(c, "=========================", 15);
+
+    c.X = 23;
+    c.Y = 16;
+    g_Console.writeToBuffer(c, "PRESS <ESC> TO GO BACK TO MAIN MENU", 15);
 }

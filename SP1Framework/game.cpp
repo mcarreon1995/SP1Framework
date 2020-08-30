@@ -322,8 +322,6 @@ void moveCharacter()
     }
     if (g_skKeyEvent[K_SPACE].keyDown)
     {
-        cMap += 1;
-        changeMap();
 
     }
     int new_x = g_sChar.m_cLocation.X - 15;
@@ -359,7 +357,7 @@ void moveCharacter()
             totalscore += score;
             totalTime += g_dElapsedTime;
             if (cMap >= 5) {
-                g_eGameState = S_ENDGAME;
+                g_eGameState = S_ENDGAME2;
             }
             else {
                 cMap += 1;
@@ -1570,7 +1568,7 @@ void endGame()
     ss.str("");
 
 
-    if (g_skKeyEvent[K_SPACE].keyDown) {
+    if (g_skKeyEvent[K_ESCAPE].keyDown) {
         resetGame();
     }
 

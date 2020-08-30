@@ -1449,6 +1449,10 @@ void endInput() {
 
     NameOut.close();
     
+    if (g_skKeyEvent[K_SPACE].keyReleased)
+    {
+        g_eGameState = S_MENU;
+    }
 }
 
 void endGame()

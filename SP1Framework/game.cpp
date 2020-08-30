@@ -603,7 +603,10 @@ void renderLevelCompleted()
         g_eGameState = S_GAME1;
         prepGame();
         changeMap();
+     
     }
+
+
 
     std::ifstream input("Highest_Score.txt");
     //incase for some odd reason the txt file cant be opened
@@ -630,7 +633,8 @@ void renderLevelCompleted()
     }
 
     output.close();
-    
+
+  
     //Instructions: If u need to cout the text in the file the code is :
     // string <anything>; (used to output the text file)
     //std::ifstream input("Highest_Score.txt")
@@ -664,6 +668,15 @@ void renderLevelCompleted()
     }
 
     timeout.close();
+
+    if ((cMap == 5) && (totalscore > Highest_Score) && (g_dElapsedTime < Time_Check) && (g_skKeyEvent[K_SPACE].keyDown))
+    {
+        g_eGameState = S_ENDGAME;
+    }
+    else if ((cMap == 5) && (totalscore < Highest_Score) && (g_dElapsedTime > Time_Check) && (g_skKeyEvent[K_SPACE].keyDown))
+    {
+        g_eGameState = S_ENDGAME2;
+    }
 }
 
 void renderTransition()

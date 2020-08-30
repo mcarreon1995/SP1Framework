@@ -141,6 +141,10 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
         break;
     case S_SCORE: gameplayKBHandler(keyboardEvent);
         break;
+    case S_ENDGAME2: gameplayKBHandler(keyboardEvent);
+        break;
+    case S_GAMEOVER: gameplayKBHandler(keyboardEvent);
+        break;
     }
 }
 
@@ -286,6 +290,7 @@ void updateGame()       // gameplay logic
 
 void moveCharacter()
 {    
+    COORD c;
 
     // Updating the location of the character based on the key release
     // providing a beep sound whenver we shift the character
@@ -369,8 +374,17 @@ void moveCharacter()
             Beep(660.00, 30);
         }
         break;
+    case 4:
+        score += pointsChar;
+        totalscore += score;
+        totalTime += g_dElapsedTime;
+        g_eGameState = S_GAMEOVER;
+        break;
     case 5:
-        resetGame(); //change this to death menu later.
+        score += pointsChar;
+        totalscore += score;
+        totalTime += g_dElapsedTime;
+        g_eGameState = S_GAMEOVER;
     } 
 }
 void processUserInput()
@@ -984,15 +998,15 @@ void scorePage()
         std::ostringstream ss;
         ss << "https://www.youtube.com/watch?v=xUxPcxK6tvI";
         c.Y = 15;
-        c.X = 25;
+        c.X = 18;
         g_Console.writeToBuffer(c, ss.str(), 12);
         ss.str("");
     }
 
     //<ESC> go back to menu
     if (g_skKeyEvent[K_ESCAPE].keyDown) {
-
         g_eGameState = S_MENU;
+        resetGame();
     }
 
 
@@ -1374,6 +1388,10 @@ void renderEndscreen() {
     COORD c;
     std::ostringstream ss;
 
+    score += pointsChar;
+    totalscore += score;
+    totalTime += g_dElapsedTime;
+
     c.X = 18;
     c.Y = 7;
     g_Console.writeToBuffer(c, "========= CONGRATULATIONS!!!! =========", 15);
@@ -1498,7 +1516,7 @@ void endInput() {
     
     if (g_skKeyEvent[K_SPACE].keyReleased)
     {
-        g_eGameState = S_MENU;
+        resetGame();
     }
 }
 
@@ -1506,6 +1524,10 @@ void endGame()
 {
     COORD c;
     std::ostringstream ss;
+
+    score += pointsChar;
+    totalscore += score;
+    totalTime += g_dElapsedTime;
 
     c.X = 25;
     c.Y = 6;
@@ -1525,6 +1547,17 @@ void endGame()
     c.X = 25;
     g_Console.writeToBuffer(c, ss.str(), 12);
     ss.str("");
+
+    ss << "Press <ESC> to proceed to MAIN MENU" ;
+    c.Y = 12;
+    c.X = 25;
+    g_Console.writeToBuffer(c, ss.str(), 12);
+    ss.str("");
+
+
+    if (g_skKeyEvent[K_SPACE].keyDown) {
+        resetGame();
+    }
 
 }
 
@@ -1558,4 +1591,8 @@ void gameOver()
     c.X = 23;
     c.Y = 16;
     g_Console.writeToBuffer(c, "PRESS <ESC> TO GO BACK TO MAIN MENU", 15);
+
+    if (g_skKeyEvent[K_ESCAPE].keyDown) {
+        resetGame();
+    }
 }
